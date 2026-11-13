@@ -1,0 +1,2884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORM BMT UGT - Formulir Pembiayaan KSPPS BMT UGT Nusantara</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* =====================================================================
+       BASE & PAPER SHEET STYLING (1:1 PHYSICAL A4 FORM APPEARANCE)
+       ===================================================================== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #525659; /* Nuansa meja kerja / PDF viewer */
+      font-family: Arial, Helvetica, sans-serif;
+      color: #000000;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Lembaran Kertas A4 */
+    .a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      margin: 14px auto;
+      padding: 10mm 12mm 10mm 12mm;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      position: relative;
+      color: #000000;
+      font-size: 9.2pt;
+      line-height: 1.28;
+    }
+
+    .font-serif-doc {
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    /* Input Garis Titik-Titik Langsung di Atas Kertas */
+    .paper-input {
+      border: none;
+      border-bottom: 1px dotted #000000;
+      background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 600;
+      color: #000000;
+      padding: 0 3px;
+      outline: none;
+      border-radius: 0;
+    }
+    .paper-input:focus {
+      background-color: #fefce8;
+      border-bottom: 1.5px solid #1b6b50;
+    }
+    .paper-input::placeholder {
+      color: #9ca3af;
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    .paper-textarea {
+      width: 100%;
+      border: 1px solid #000000;
+      background: transparent;
+      font-family: inherit;
+      font-size: 8.8pt;
+      color: #000000;
+      padding: 4px 6px;
+      outline: none;
+      resize: vertical;
+    }
+    .paper-textarea:focus {
+      background-color: #fefce8;
+    }
+
+    /* Checkbox Kotak Nyata Seperti Cetakan */
+    .paper-chk {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      margin-right: 7px;
+      vertical-align: middle;
+    }
+    .paper-chk-box {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border: 1px solid #000000;
+      text-align: center;
+      line-height: 10px;
+      font-size: 8.5pt;
+      font-weight: bold;
+      margin-right: 3px;
+      background: #ffffff;
+      color: #000000;
+      flex-shrink: 0;
+    }
+    .paper-chk.checked .paper-chk-box {
+      background: #e6f4ee;
+    }
+
+    /* Opsi Coret Yang Tidak Perlu */
+    .strike-opt {
+      cursor: pointer;
+      padding: 0 2px;
+      user-select: none;
+    }
+    .strike-opt.crossed {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+    .strike-opt.active-opt {
+      font-weight: bold;
+    }
+
+    /* Tabel Formulir Bergaris Hitam Tegas */
+    .form-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8.3pt;
+    }
+    .form-table th,
+    .form-table td {
+      border: 1px solid #000000;
+      padding: 2.5px 4px;
+      vertical-align: middle;
+    }
+    .form-table th {
+      font-weight: bold;
+      text-align: center;
+      background-color: #f3f4f6;
+    }
+
+    .cell-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      color: #000000;
+      padding: 1px 2px;
+      outline: none;
+    }
+    .cell-input:focus {
+      background-color: #fefce8;
+    }
+
+    .layout-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .layout-table td {
+      padding: 1.8px 2px;
+      vertical-align: top;
+    }
+
+    /* Kotak Cabang / Capem Ringkas & Proporsional */
+    .cabang-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid #000000;
+      padding: 2.5px 8px;
+      font-size: 8.5pt;
+      font-weight: bold;
+      width: auto;
+      max-width: 280px;
+      white-space: nowrap;
+    }
+    .cabang-box .cabang-in {
+      border: none;
+      border-bottom: 1px dotted #000000;
+      background: transparent;
+      font-family: inherit;
+      font-size: 8.5pt;
+      font-weight: bold;
+      color: #000000;
+      padding: 0 2px;
+      outline: none;
+      width: 140px;
+    }
+    .cabang-box .cabang-in:focus {
+      background-color: #fefce8;
+      border-bottom: 1.5px solid #1b6b50;
+    }
+
+    /* Responsive wrapper di layar HP agar kertas A4 tetap proporsional 1:1 dan bisa digeser */
+    .paper-viewport {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 30px;
+    }
+
+    /* =====================================================================
+       PRINT STYLES (@media print) - 100% IDENTIK DENGAN DOKUMEN FISIK A4
+       ===================================================================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+      body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .paper-viewport {
+        overflow: visible !important;
+        padding: 0 !important;
+      }
+      .a4-sheet {
+        width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        page-break-after: always;
+        break-after: page;
+      }
+      .a4-sheet:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+      .paper-input,
+      .cell-input,
+      .paper-textarea {
+        background: transparent !important;
+      }
+      .paper-input::placeholder,
+      .cell-input::placeholder {
+        color: transparent !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================================
+       BILAH ALAT TOP BAR (.no-print)
+       ===================================================================== -->
+  <header class="no-print sticky top-0 z-50 bg-[#14533c] text-white shadow-lg border-b border-emerald-900">
+    <div class="max-w-[1400px] mx-auto px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+      <!-- Judul & Berkas Selector -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-2 pr-2 border-r border-emerald-700">
+          <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-xs shrink-0">
+            <svg viewBox="0 0 100 100" class="w-7 h-7">
+              <circle cx="50" cy="50" r="46" fill="#1b6b50"/>
+              <path d="M23 30 V58 C23 68 31 73 41 73 C51 73 57 67 57 58 V30 H47 V57 C47 61 44 63 40 63 C36 63 33 61 33 57 V30 Z" fill="#ffffff"/>
+              <path d="M43 44 H77 V53 H65 V73 H55 V53 H43 Z" fill="#ffffff"/>
+            </svg>
+          </div>
+          <div>
+            <div class="font-extrabold text-sm tracking-wide leading-none">FORM BMT UGT</div>
+            <div class="text-[10px] text-emerald-200 leading-tight">Digital Paper Form A4 (1:1)</div>
+          </div>
+        </div>
+
+        <!-- Pemilih Berkas Nasabah -->
+        <div class="flex items-center gap-1.5">
+          <label for="select-berkas" class="text-[11px] font-semibold text-emerald-100 hidden sm:inline">Berkas:</label>
+          <select id="select-berkas" onchange="switchApplication(this.value)" class="bg-white text-gray-900 text-xs font-bold rounded-lg px-2.5 py-1.5 max-w-[210px] focus:outline-none">
+          </select>
+          <button onclick="createNewApplication()" class="bg-amber-400 hover:bg-amber-300 text-gray-900 text-xs font-bold px-2.5 py-1.5 rounded-lg transition" title="Buat Berkas Pengajuan Baru">+ Baru</button>
+          <button onclick="deleteCurrentApplication()" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-2 py-1.5 rounded-lg transition" title="Hapus Berkas Ini">Hapus</button>
+        </div>
+      </div>
+
+      <!-- Tombol Pasang Kop & Cetak -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <input type="file" id="input-kop-file" accept="image/*" class="hidden" onchange="handleKopUpload(event)" />
+        <button onclick="document.getElementById('input-kop-file').click()" class="bg-emerald-800 hover:bg-emerald-700 border border-emerald-500 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition" title="Upload gambar kop surat agar terpasang di semua 8 lembar">
+          <span>🖼️ Pasang Gambar Kop Surat</span>
+        </button>
+        <button id="btn-reset-kop" onclick="resetKopImage()" class="hidden bg-gray-700 hover:bg-gray-600 text-white text-[11px] px-2 py-1.5 rounded-lg transition" title="Kembalikan kop bawaan">Reset Kop</button>
+        <button id="btn-clear-cashflow" onclick="clearCashflowNumbers()" class="bg-amber-500 hover:bg-amber-400 text-gray-900 text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-xs transition" title="Reset seluruh nominal Cashflow Analysis menjadi 0">
+          🧹 Kosongkan Angka Cashflow
+        </button>
+
+        <button onclick="printActiveSheet()" class="bg-white hover:bg-gray-100 text-[#14533c] text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-xs transition">
+          🖨️ Cetak Tampilan Ini
+        </button>
+        <button onclick="printAllSheets()" class="bg-gray-900 hover:bg-black text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-xs transition">
+          📑 Cetak Semua 8 Form
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigasi Menu Utama: PEMBIAYAAN -->
+    <div class="bg-[#0e3f2d] border-t border-emerald-800">
+      <div class="max-w-[1400px] mx-auto px-3 py-1.5 flex items-center gap-2">
+        <!-- Menu Utama PEMBIAYAAN (Dropdown) -->
+        <div class="relative" id="pembiayaan-menu-wrapper">
+          <button type="button" onclick="togglePembiayaanDropdown()" class="bg-amber-400 hover:bg-amber-300 text-gray-900 px-3 py-1.5 rounded-md text-xs font-extrabold flex items-center gap-1.5 shadow-xs whitespace-nowrap transition">
+            <span>📂 PEMBIAYAAN</span>
+            <span id="pembiayaan-active-badge" class="bg-[#14533c] text-white text-[10px] px-1.5 py-0.5 rounded-xs">Semua (8 Lembar)</span>
+            <span class="text-[10px]">▾</span>
+          </button>
+
+          <!-- Daftar Sub-Menu PEMBIAYAAN -->
+          <div id="pembiayaan-dropdown" class="hidden absolute left-0 mt-1.5 w-72 bg-white text-gray-900 rounded-lg shadow-xl border border-gray-200 py-1.5 z-50">
+            <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-800 border-b border-gray-100">
+              Menu Formulir Pembiayaan
+            </div>
+            <button type="button" onclick="selectPembiayaanItem('ALL')" class="w-full text-left px-3 py-2 text-xs font-bold hover:bg-emerald-50 flex items-center justify-between border-b border-gray-100" id="dd-item-ALL">
+              <span>📑 Tampilkan Semua (8 Lembar)</span>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-xs font-semibold">Default</span>
+            </button>
+            <div id="pembiayaan-dropdown-items" class="max-h-80 overflow-y-auto divide-y divide-gray-50">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pintasan Cepat Lembar di dalam Menu PEMBIAYAAN -->
+        <div class="overflow-x-auto flex items-center gap-1 min-w-0 flex-1" id="nav-tabs">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Status Simpan -->
+  <div id="save-toast" class="no-print fixed bottom-4 right-4 z-50 bg-gray-900/90 text-white text-xs px-3 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-200">
+    Tersimpan otomatis
+  </div>
+
+  <!-- =====================================================================
+       VIEWPORT KERTAS A4 (TAMPILAN LAYAR & PRINT)
+       ===================================================================== -->
+  <main class="paper-viewport" id="paper-container">
+    <!-- Lembaran Kertas A4 dirender di sini -->
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. MASTER DATA: 39 PERTANYAAN QUESTIONER SURVEY (PMB/FRM/004/REV00)
+    // =========================================================================
+    const QUESTIONER_39 = [
+      { no: 1, q: "Apakah calon debitur (Pemohon) memiliki hubungan dengan BMT? (yang tidak baik langsung ditolak)", opts: { a: "Pernah pinjam tapi kurang disiplin", b: "belum (tidak) ada hubungan sebelumnya", c: "Pernah meminjam (disiplin) dan masih menabung", d: "Sering meminjam (disiplin) dan rutin menabung" } },
+      { no: 2, q: "Apakah calon debitur memiliki hubungan dengan salah satu karyawan BMT? (yang dikenal tidak baik langsung ditolak)", opts: { a: "Ada hubungan keluarga/kerabat/sahabat/tetangga", b: "Tidak ada", c: "Ada hubungan dan dikenal baik", d: "Ada hubungan baik dan dikenal baik serta disiplin" } },
+      { no: 3, q: "Bagaimana kesehatan dan umur calon debitur?", opts: { a: "Tidak sehat dan umur >45th", b: "Tidak sehat atau sehat tp umur >50th, atau sehat tapi umur <25th.", c: "Sehat dan umur 40 s/d 49th", d: "Sehat dan umur 25 s/d 39th" } },
+      { no: 4, q: "Berapa jarak tempat tinggal dan atau tempat usaha catur dari kantor BMT atau rumah karyawan?", opts: { a: "Lebih dari 5 km", b: "Lebih dari 3 km", c: "Kurang dari 1 km", d: "Lebih dari 1 km" } },
+      { no: 5, q: "Apa status tempat tinggal pemohon?", opts: { a: "Ngontrak/kost", b: "Numpang wali/saudara/rumah dinas", c: "Rumah sendiri tapi pendatang", d: "Rumah sendiri dan bukan pendatang" } },
+      { no: 6, q: "Bagaimana calon debitur dikenal di tempat tinggalnya? (responden min 5 Orang)", opts: { a: "dikenal tidak baik (pernyataan 3-5 orang)", b: "dikenal tidak baik (pernyataan 2 orang)", c: "dikenal baik (pernyataan 3 orang)", d: "dikenal baik (pernyataan 4-5 orang)" } },
+      { no: 7, q: "Bagaimana calon debitur dikenal di lingkungan kerja/organisasinya?", opts: { a: "Dikenal tidak baik (pernyataan secara umum/mutawatir)", b: "Dikenal tidak baik (sebagian responden) atau tidak dikenal karena kurang bergaul", c: "Dikenal baik oleh sebagian, dan jarang bergaul", d: "Dikenal baik dan supel (umum/mutawatir)" } },
+      { no: 8, q: "Dia tidak banyak dikenal karena:", opts: { a: "Jarang ada dirumah", b: "Tertutup dan tidak supel (kurang bergaul)", c: "Pendatang (Bukan penduduk tetap)", d: "Orang baru atau pendatang (penduduk tetap)" } },
+      { no: 9, q: "Bagaimana pergaulan atau gaya hidup calon debitur?", opts: { a: "Tidak religius, Suka judi, mabuk dan foya-foya", b: "Tidak religius tapi tdk suka judi, mabuk dan foya-foya", c: "Religius meskipun gaya hidup mewah", d: "Religius gaya hidup sederhana meskipun kaya" } },
+      { no: 10, q: "Bagaimana perilaku dan tutur kata calon debitur saat wawancara?", opts: { a: "Tidak respek, tidak tenang, tidak tulus, ragu-ragu, dan atau tidak terbuka", b: "Respek tapi tidak tenang, tidak tulus, ragu-ragu, kurang terbuka", c: "Respek, tulus, terbuka tapi kurang meyakinkan", d: "Respek, tulus, terbuka, tidak ragu-ragu dan meyakinkan" } },
+      { no: 11, q: "Apa tujuan penggunaan pembiayaan pemohon?", opts: { a: "Bayar hutang/biaya berobat/biaya pendidikan/biaya-biaya lain", b: "pembelian barang", c: "Usaha (dagang/tani/dan lain-lainnya) baru", d: "Tambahan modal usaha yang sudah produktif" } },
+      { no: 12, q: "Bagaimana respon keluarga atau orang terdekat atas pengajuan Pemohon?", opts: { a: "Tidak dikasih tahu atau tahu tapi kurang setuju", b: "Tahu tapi kayak tidak tahu-menahu (skeptis), terserah Pemohon/diam saja", c: "Tahu dan mendukung", d: "Ikut mendukung dan bersedia ikut bertanggung jawab" } },
+      { no: 13, q: "Bagaimana kondisi ekonomi calon debitur saat ini?", opts: { a: "Sederhana dan belum mandiri", b: "Sederhana dan mandiri", c: "Cukup dan mandiri", d: "Mapan dan mandiri" } },
+      { no: 14, q: "Apakah Pemohon memiliki beban hutang atau kredit?", opts: { a: "Memiliki banyak hutang dan belum terselesaikan meskipun tak diakui", b: "Mengakui memiliki hutang atau kredit dan belum terselesaikan", c: "Mengakui memiliki hutang/kredit tapi mampu & kooperatif", d: "Tidak memiliki hutang atau kredit dari pihak manapun" } },
+      { no: 15, q: "Bagaimana pemohon menyikapi aturan dan prosedur BMT?", opts: { a: "Meminta dipermudah dan dipercepat (terkesan memaksa) dan tidak mau disurvei", b: "Bertanya kira-kira pengajuannya dapat berapa dan kapan dicairkan", c: "Memaksakan plafond atau minta turunnya margin", d: "Siap menerima aturan dan prosedur BMT" } },
+      { no: 16, q: "Apa jenis jaminan calon debitur?", opts: { a: "Kendaraan bermotor atau benda bergerak lainnya", b: "Tanah dan bangunan atau benda tidak bergerak lainnya.", c: "Emas atau perhiasan", d: "Deposito atau tabungan di BMT." } },
+      { no: 17, q: "Berapa nilai jaminannya?", opts: { a: "dibawah nilai pembiayaannya", b: "sama dengan nilai pembiayaan (selain jaminan tabungan/deposito)", c: "Sesuai standart taksasi jaminan", d: "Nilai pembiayaan jauh dibawah nilai standart taksasi jaminan" } },
+      { no: 18, q: "Bagaimana keadaan jaminan calon debitur?", opts: { a: "Tidak kuat, tidak mengcover, bermasalah", b: "Kuat tapi tidak mengcover dan rentan bermasalah", c: "Kuat, mengcover dan aman tapi tidak marketable", d: "Kuat dan aman serta marketable" } },
+      { no: 19, q: "Apakah ada pihak yang ikut menjamin keamanan pembiayaan?", opts: { a: "Tidak ada sama sekali meski hanya pendamping", b: "Hanya pendamping sebagai saksi tapi tidak sebagai penanggung jawab", c: "Ada namun sebatas mengawasi dan menjaga", d: "Ada dan mau bertanggung jawab penuh bilamana bermasalah" } },
+      { no: 20, q: "Apakah bersedia memberikan jaminan tambahan sebagai penguat kepercayaan?", opts: { a: "Tidak bersedia meskipun ada", b: "Tidak ada dan tidak bersedia", c: "Bersedia jika ada", d: "Ada dan bersedia" } },
+      { no: 21, q: "Apakah pemohon memiliki pekerjaan/sumber pendapatan cukup dan tetap?", opts: { a: "Tidak memiliki penghasilan dan belum pernah bekerja/usaha", b: "Musiman/buruh tidak tetap/serabutan/tergantung job dan tidak cukup", c: "Buruh/pegawai tetap, pedagang/petani kecil dan cukup", d: "Pengusaha/pedagang/petani/pegawai yang sukses" } },
+      { no: 22, q: "Bagaimana wawasan calon debitur dalam usaha yang (mau) ditekuninya? (baik tani maupun lainnya)", opts: { a: "Baru dan tidak berpengalaman", b: "Baru dan tdk berpengalaman tapi memiliki wawasan", c: "Berpengalaman dan berwawasan tapi belum nampak sukses", d: "Sangat berpengalaman dan sudah nampak sukses" } },
+      { no: 23, q: "Bagaimana legalitas usaha pemohon?", opts: { a: "Ilegal dan bermasalah secara hukum", b: "Tidak berijin tapi kecil kemungkinan bermasalah", c: "Belum berijin tapi pada umumnya tidak bermasalah", d: "Legal dan tidak bermasalah" } },
+      { no: 24, q: "Apakah usaha pemohon tidak mengganggu kesehatan dan kelestarian lingkungan?", opts: { a: "Mengganggu kesehatan dan merusak lingkungan", b: "Mengganggu kesehatan atau merusak lingkungan", c: "Tidak merusak lingkungan tapi sedikit berpolusi", d: "Tidak berpolusi dan tidak merusak lingkungan" } },
+      { no: 25, q: "Bagaimana kondisi dan prospek (market shared/iklim) usaha yang sedang ditekuni calon debitur? (tani maupun lainnya)", opts: { a: "Tidak baik dan tidak prospek (Konsumen terbatas/kalah persaingan)", b: "Tidak baik tapi masih prospek", c: "Baik tapi prospek kedepan kurang baik", d: "Baik dan prospeknya kedepan sangat baik" } },
+      { no: 26, q: "Bagaimana semangat kerja Pemohon?", opts: { a: "Tidak serius dan tidak meyakinkan", b: "Hanya ikut-ikutan atau coba-coba", c: "Semangat meskipun tidak meyakinkan", d: "Semangat dan sangat meyakinkan" } },
+      { no: 27, q: "Bagaimana statistik usaha/pekerjaan pemohon?", opts: { a: "Tetap tidak baik dan tidak berubah dari sebelumnya", b: "Sedang menurun dan tidak sebaik seperti sebelumnya", c: "Baik namun tidak meningkat dari sebelumnya", d: "Baik dan terus meningkat dari sebelumnya" } },
+      { no: 28, q: "Bagaimana pembukuan keuangan usaha calon debitur?", opts: { a: "Tidak ada pembukuan dan nota tidak disimpan", b: "Tidak ada pembukuan tapi hanya menyimpan nota", c: "hanya catatan keluar masuknya uang dan ada nota", d: "Ada arus kas, laba rugi berikut nota-nota masih tersimpan" } },
+      { no: 29, q: "Bagaimana tingkat resiko usaha calon debitur dilihat dari modal?", opts: { a: "modal di atas 50,000,000,-", b: "modal di atas 30,000,000,-", c: "Modal di atas 10,000,000,-", d: "Modal di bawah 10,000,000,-" } },
+      { no: 30, q: "Apa ada aset pendukung jika terjadi resiko gagal usaha?", opts: { a: "Tidak ada sama sekali", b: "Ada namun tidak cukup memenuhi", c: "Ada dan mencukupi namun prosesnya belum tentu mudah", d: "Ada dan mencukupi dengan proses yang mudah tanpa kendala" } },
+      { no: 31, q: "Apakah aset dan usaha calon debitur berada di tempat aman?", opts: { a: "Tidak aman", b: "Aman tapi jauh dari keramaian dan tanpa security level", c: "Aman dan banyak rumah dan aktivitas warga", d: "Aman dan selalu dalam pengawasan (ada security level)" } },
+      { no: 32, q: "Apakah Pemohon bersedia nabung secara rutin?", opts: { a: "Tidak", b: "Bersedia tapi tidak (jamin) rutin", c: "Sanggup menabung minimal 1x perminggu secara rutin", d: "Sanggup menabung tiap hari secara rutin" } },
+      { no: 33, q: "Berapa saldo tabungan pemohon?", opts: { a: "< 30% dari nilai pembiayaan", b: "> 30% dari nilai pembiayaan", c: "> 50% dari nilai pembiayaan", d: "> 70% dari nilai pembiayaan" } },
+      { no: 34, q: "Berapa rasio pembiayaan : modal (DER)?", opts: { a: "< 100%", b: "< 85%", c: "< 70% dari nilai pembiayaan", d: "< 55% dari nilai pembiayaan" } },
+      { no: 35, q: "Berapa omset usaha perbulan : modal?", opts: { a: "< 50% dari modal", b: "85% dari modal", c: "< 120% dari modal", d: "> 120% dari modal" } },
+      { no: 36, q: "Berapa beban usaha : pendapatan kotor?", opts: { a: "< 90%", b: "< 80%", c: "< 70%", d: "< 60%" } },
+      { no: 37, q: "Berapa laba bersih usaha : modal?", opts: { a: "< 5%", b: "7%", c: "< 10%", d: "> 10%" } },
+      { no: 38, q: "Berapa laba bersih usaha perbulan : Pembiayaan?", opts: { a: "< 10%", b: "15%", c: "15% - 20%", d: "20% lebih" } },
+      { no: 39, q: "Sesuai pengajuan, berapa jumlah angsuran : total pendapatan bersih?", opts: { a: "70% lebih dari pendapatan bersih perbulan", b: "50% lebih dari pendapatan bersih perbulan", c: "40% lebih dari pendapatan bersih perbulan", d: "Kurang dari 40% dari pendapatan bersih perbulan" } }
+    ];
+
+    const TABS_DEF = [
+      { id: 1, short: "001 Permohonan", label: "[1] PMB/FRM/001 (Permohonan)" },
+      { id: 2, short: "003 Jadwal", label: "[2] PMB/FRM/003 (Jadwal Survey)" },
+      { id: 3, short: "053 Berita Acara", label: "[3] PMB/FRM/053 (Berita Acara Survey)" },
+      { id: 4, short: "004 Questioner", label: "[4] PMB/FRM/004 (Questioner 39 Soal)" },
+      { id: 5, short: "005 Cashflow", label: "[5] PMB/FRM/005 (Cashflow Analysis)" },
+      { id: 6, short: "012 Agunan Tanah", label: "[6] PMB/FRM/012 (Agunan Tanah)" },
+      { id: 7, short: "010 Kendaraan", label: "[7] PMB/FRM/010 (Agunan Kendaraan)" },
+      { id: 8, short: "Surat Pernyataan", label: "[8] Surat Pernyataan" }
+    ];
+
+    // =========================================================================
+    // 2. HELPER FORMATTING & TERBILANG INDONESIA
+    // =========================================================================
+    function fmtRp(val) {
+      const n = Number(val) || 0;
+      return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(n);
+    }
+
+    function terbilang(angka) {
+      angka = Math.floor(Math.abs(Number(angka) || 0));
+      if (angka === 0) return "Nol Rupiah";
+      const bil = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+      function konv(n) {
+        if (n < 12) return " " + bil[n];
+        if (n < 20) return konv(n - 10) + " Belas";
+        if (n < 100) return konv(Math.floor(n / 10)) + " Puluh" + konv(n % 10);
+        if (n < 200) return " Seratus" + konv(n - 100);
+        if (n < 1000) return konv(Math.floor(n / 100)) + " Ratus" + konv(n % 100);
+        if (n < 2000) return " Seribu" + konv(n - 1000);
+        if (n < 1000000) return konv(Math.floor(n / 1000)) + " Ribu" + konv(n % 1000);
+        if (n < 1000000000) return konv(Math.floor(n / 1000000)) + " Juta" + konv(n % 1000000);
+        if (n < 1000000000000) return konv(Math.floor(n / 1000000000)) + " Miliar" + konv(n % 1000000000);
+        return konv(Math.floor(n / 1000000000000)) + " Triliun" + konv(n % 1000000000000);
+      }
+      return (konv(angka).trim() + " Rupiah").replace(/\s+/g, ' ');
+    }
+
+    function parseTanggalParts(dateStr) {
+      if (!dateStr) return { hari: "............", tgl: "....", bln: "............", thn: "20...." };
+      const hariArr = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      const blnArr = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const d = new Date(dateStr);
+      if (isNaN(d)) return { hari: "............", tgl: "....", bln: "............", thn: "20...." };
+      return {
+        hari: hariArr[d.getDay()],
+        tgl: String(d.getDate()).padStart(2, '0'),
+        bln: blnArr[d.getMonth()],
+        thn: String(d.getFullYear())
+      };
+    }
+
+    function esc(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // =========================================================================
+    // HELPER INPUT ANGKA NATURAL (TIDAK RE-RENDER SAAT MENGETIK)
+    // =========================================================================
+    function numInputHtml(path, val, opts = {}) {
+      const n = Number(val) || 0;
+      const formatted = n !== 0 ? fmtRp(n) : '';
+      const cls = opts.cls || 'paper-input';
+      const style = opts.style || 'width: 120px; text-align: right;';
+      const placeholder = opts.placeholder !== undefined ? opts.placeholder : '0';
+      const allowDecimal = opts.allowDecimal ? 'true' : 'false';
+      const afterFn = opts.afterFn || '';
+
+      return `<input type="text" inputmode="${opts.allowDecimal ? 'decimal' : 'numeric'}" class="${cls}" style="${style}" value="${formatted}" placeholder="${placeholder}" data-num-path="${path}" data-allow-decimal="${allowDecimal}" onfocus="handleNumFocus(this)" oninput="handleNumInput(this, ${afterFn ? `'${afterFn}'` : 'null'})" onblur="handleNumBlur(this, ${afterFn ? `'${afterFn}'` : 'null'})" />`;
+    }
+
+    function getPathVal(obj, path) {
+      const parts = path.split('.');
+      let cur = obj;
+      for (let i = 0; i < parts.length; i++) {
+        if (cur === undefined || cur === null) return 0;
+        cur = cur[parts[i]];
+      }
+      return cur;
+    }
+
+    function handleNumFocus(el) {
+      const r = getRec();
+      const rawVal = Number(getPathVal(r, el.dataset.numPath)) || 0;
+      el.value = rawVal === 0 ? '' : String(rawVal);
+      setTimeout(() => {
+        try { el.select(); } catch (e) {}
+      }, 0);
+    }
+
+    function handleNumInput(el, afterFnName) {
+      const allowDec = el.dataset.allowDecimal === 'true';
+      let cleaned = el.value;
+      if (allowDec) {
+        cleaned = cleaned.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+        const dotIdx = cleaned.indexOf('.');
+        if (dotIdx !== -1) {
+          cleaned = cleaned.slice(0, dotIdx + 1) + cleaned.slice(dotIdx + 1).replace(/\./g, '');
+        }
+      } else {
+        cleaned = cleaned.replace(/[^0-9]/g, '');
+      }
+      if (el.value !== cleaned) {
+        el.value = cleaned;
+      }
+      const numVal = cleaned === '' ? 0 : (allowDec ? parseFloat(cleaned) || 0 : parseInt(cleaned, 10) || 0);
+      setVal(el.dataset.numPath, numVal, false);
+      if (afterFnName && typeof window[afterFnName] === 'function') {
+        window[afterFnName]();
+      }
+    }
+
+    function handleNumBlur(el, afterFnName) {
+      const r = getRec();
+      const allowDec = el.dataset.allowDecimal === 'true';
+      const numVal = Number(getPathVal(r, el.dataset.numPath)) || 0;
+      if (allowDec) {
+        el.value = numVal !== 0 ? String(numVal) : '';
+      } else {
+        el.value = numVal !== 0 ? fmtRp(numVal) : '';
+      }
+      if (afterFnName && typeof window[afterFnName] === 'function') {
+        window[afterFnName]();
+      }
+    }
+
+    function updateCashflowSummaryDom() {
+      const r = getRec();
+      const cf = calcCashflow(r);
+
+      const updateGroup = (arr, prefix) => {
+        arr.forEach((row, idx) => {
+          const el = document.getElementById(`cf-row-${prefix}-${idx}`);
+          if (el) {
+            const mVal = cf.konv(row);
+            el.textContent = mVal ? fmtRp(mVal) : '0';
+          }
+        });
+      };
+
+      updateGroup(r.cfUsahaPendapatan, 'up');
+      updateGroup(r.cfUsahaPengeluaran, 'uk');
+      updateGroup(r.cfRtPendapatan, 'rp');
+      updateGroup(r.cfRtPengeluaran, 'rk');
+
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+      const setClassTxt = (cls, txt) => {
+        document.querySelectorAll('.' + cls).forEach(el => { el.textContent = txt; });
+      };
+
+      setTxt('cf-tot-pend-usaha', 'Rp ' + fmtRp(cf.totPendUsaha));
+      setTxt('cf-tot-peng-usaha', 'Rp ' + fmtRp(cf.totPengUsaha));
+      setTxt('cf-bersih-usaha', 'Rp ' + fmtRp(cf.bersihUsaha));
+      setTxt('cf-tot-pend-rt', 'Rp ' + fmtRp(cf.totPendRt));
+      setTxt('cf-tot-peng-rt', 'Rp ' + fmtRp(cf.totPengRt));
+      setTxt('cf-bersih-perbulan', 'Rp ' + fmtRp(cf.bersihPerbulan));
+      setTxt('cf-margin-rp', 'Rp ' + fmtRp(cf.marginRp));
+      setTxt('cf-jumlah-angsuran', 'Rp ' + fmtRp(cf.angsuran));
+      setTxt('cf-persen-angsuran', cf.persenAngsuran + '%');
+      setTxt('cf-kemampuan-debitur', cf.kemampuan);
+      setClassTxt('sync-terbilang-pengajuan', terbilang(r.jumlahPengajuan));
+      setClassTxt('sync-terbilang-pengajuan-paren', `(${terbilang(r.jumlahPengajuan)})`);
+      setClassTxt('sync-rp-pengajuan', 'Rp ' + fmtRp(r.jumlahPengajuan));
+    }
+
+    function updateSheet1SummaryDom() {
+      const r = getRec();
+      document.querySelectorAll('.sync-terbilang-pengajuan-paren').forEach(el => {
+        el.textContent = `(${terbilang(r.jumlahPengajuan)})`;
+      });
+      document.querySelectorAll('.sync-terbilang-pengajuan').forEach(el => {
+        el.textContent = terbilang(r.jumlahPengajuan);
+      });
+      document.querySelectorAll('.sync-rp-pengajuan').forEach(el => {
+        el.textContent = 'Rp ' + fmtRp(r.jumlahPengajuan);
+      });
+      updateCashflowSummaryDom();
+    }
+
+    function updateSheet3SummaryDom() {
+      updateSheet1SummaryDom();
+    }
+
+    function updateSheet6SummaryDom() {
+      const r = getRec();
+      const luas = Number(r.tLuasM2) || 0;
+      const totNjop = (Number(r.tNjopPerM2) || 0) * luas;
+      const totPasar = (Number(r.tPasarPerM2) || 0) * luas;
+      const taksasi = Number(r.tTaksasiTotal) || 0;
+      const maksCair = Math.round(taksasi * ((Number(r.tMaksPencairanPersen) || 0) / 100));
+
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+      setTxt('s6-luas-njop', String(luas));
+      setTxt('s6-tot-njop', 'Rp ' + fmtRp(totNjop));
+      setTxt('s6-luas-pasar', String(luas));
+      setTxt('s6-tot-pasar', 'Rp ' + fmtRp(totPasar));
+      setTxt('s6-maks-cair', 'Rp ' + fmtRp(maksCair));
+      setTxt('s6-terbilang-taksasi', terbilang(taksasi));
+    }
+
+    function updateSheet7SummaryDom() {
+      const r = getRec();
+      const taksasi = Number(r.kNilaiTaksasi) || 0;
+      const maksCair = Math.round(taksasi * ((Number(r.kMaksPencairanPersen) || 0) / 100));
+
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+      setTxt('s7-maks-cair', 'Rp ' + fmtRp(maksCair));
+      setTxt('s7-terbilang-taksasi', terbilang(taksasi));
+    }
+
+    function clearCashflowNumbers() {
+      const r = getRec();
+      const zeroArr = (arr) => arr.forEach(item => { item.h = 0; item.m = 0; item.b = 0; });
+      zeroArr(r.cfUsahaPendapatan);
+      zeroArr(r.cfUsahaPengeluaran);
+      zeroArr(r.cfRtPendapatan);
+      zeroArr(r.cfRtPengeluaran);
+      r.cfPlafondDisetujui = 0;
+      r.cfAngsuranIdeal = 0;
+      saveAllData(true);
+      renderPaper();
+    }
+
+    // =========================================================================
+    // 3. STATE MANAGEMENT & LOCALSTORAGE
+    // =========================================================================
+    const APP_STORAGE_KEY = 'FORM_BMT_UGT_PAPER_DATA_V1';
+    const KOP_STORAGE_KEY = 'FORM_BMT_UGT_CUSTOM_KOP_BASE64';
+
+    let appList = [];
+    let activeId = null;
+    let activeTab = 'ALL'; // Default: Tampilkan Semua (8 Lembar) dalam menu PEMBIAYAAN
+    let isPrintingAll = false;
+    let customKopBase64 = null;
+
+    function createBlankRecord() {
+      const today = new Date().toISOString().split('T')[0];
+      const p = parseTanggalParts(today);
+      // 18 baris kosong tambahan untuk jadwal survey (baris 2..19)
+      const extraRows = Array.from({ length: 18 }, () => ({
+        tgl: '', atasNama: '', plafond: '', agunan: '', penggunaan: '', jadwalSurvey: '', status: '', paraf: ''
+      }));
+
+      return {
+        id: 'REC-' + Date.now(),
+        cabang: '',
+        capem: '',
+        bulanJadwal: `${p.bln} ${p.thn}`,
+        // Identitas Utama (Tersinkron ke semua lembar)
+        namaLengkap: '',
+        bin: '',
+        jenisKelamin: 'Pria',
+        tempatLahir: '',
+        tglLahir: '',
+        blnLahir: '',
+        thnLahir: '',
+        nikKtp: '',
+        noHp: '',
+        statusPerkawinan: 'Nikah',
+        lamaNikah: '',
+        // Alamat KTP
+        alamatKtp: '',
+        rtRwKtp: '',
+        kelDesaKtp: '',
+        kecamatanKtp: '',
+        kabKotaKtp: '',
+        propinsiKtp: '',
+        kodePosKtp: '',
+        // Domisili
+        alamatDomisili: '',
+        rtRwDomisili: '',
+        kelDesaDomisili: '',
+        kecamatanDomisili: '',
+        kabKotaDomisili: '',
+        propinsiDomisili: '',
+        statusTempatTinggal: 'Hak milik',
+        tahunTinggal: '',
+        pendidikanTerakhir: 'SLTA',
+        // Pekerjaan / Usaha
+        sumberPendapatan: [],
+        sumberPendapatanLain: '',
+        lamaUsaha: '',
+        tempatKerjaUsaha: '',
+        perusahaanInstansi: '',
+        jabatanKerja: '',
+        kerjaDariTh: '',
+        kerjaSampaiTh: '',
+        pendapatanKategori: '',
+        pendapatanNominal: 0,
+        // Organisasi
+        org1Nama: '', org1Jabatan: '', org1Status: 'Aktif', org1Dari: '', org1Sampai: '',
+        org2Nama: '', org2Jabatan: '', org2Status: 'Aktif', org2Dari: '', org2Sampai: '',
+        // Tanggungan
+        tanggunganPasangan: '',
+        tanggunganAnak: '',
+        tanggunganOrtu: '',
+        tanggunganLain: '',
+        // Pinjaman Pihak Lain
+        pinjamanLain: [],
+        pinjamanLainKet: '',
+        // Penanggung Jawab
+        penanggungJawabNama: '',
+        penanggungJawabStatus: 'Suami / Istri',
+        penanggungJawabHp1: '',
+        penanggungJawabHp2: '',
+        // Pengajuan Pembiayaan
+        jumlahPengajuan: 0,
+        untukKeperluan: '',
+        jangkaWaktu: 12,
+        satuanJangkaWaktu: 'Bulan',
+        akadPembiayaan: 'Jual Beli',
+        keteranganAkad: '',
+        agunanBerupa: '',
+        statusKepemilikanAgunan: 'Hak milik',
+        suratAgunan: [],
+        suratAgunanLain: '',
+        // Tanggal & Petugas
+        tanggalPermohonan: today,
+        namaPemohon: '',
+        namaWali: '',
+        namaAosp: '',
+
+        // Jadwal Survey (Form 003)
+        jadwalSurveyTgl: today,
+        jadwalStatus: 'Terjadwal',
+        jadwalParaf: '',
+        jadwalExtraRows: extraRows,
+
+        // Berita Acara Survey (Form 053)
+        baTanggal: today,
+        baSurveyorNama: '',
+        baSurveyorJabatan: 'AOA / AOAP',
+        baKarakter: 'Sangat Bagus',
+        baPermodalan: 'Cukup Bagus',
+        baPendapatan: 'Cukup Bagus',
+        baLingkungan: 'Sangat Bagus',
+        baAgunan: 'Sangat Bagus',
+        baBentukAgunan: [],
+
+        // Questioner Survey 39 Soal (Form 004)
+        qAnswers: {},
+        qPotensiMasalah: '',
+        qKesimpulan: '',
+        qTanggal: today,
+        qSurveyorAoa: '',
+        qPemeriksaKpl: '',
+
+        // Cashflow Analysis (Form 005)
+        cfUsahaPendapatan: [
+          { ket: 'Dari Kegiatan Usaha', h: 0, m: 0, b: 0 },
+          { ket: 'Pendapatan Usaha Lainnya', h: 0, m: 0, b: 0 },
+          { ket: 'Pendapatan Lainnya', h: 0, m: 0, b: 0 }
+        ],
+        cfUsahaPengeluaran: [
+          { ket: 'Pembelian Bahan Baku', h: 0, m: 0, b: 0 },
+          { ket: 'Gaji dan Upah', h: 0, m: 0, b: 0 },
+          { ket: 'Listrik, Telpon dan Air', h: 0, m: 0, b: 0 },
+          { ket: 'Sewa', h: 0, m: 0, b: 0 },
+          { ket: 'Biaya Transportasi dan Snack', h: 0, m: 0, b: 0 },
+          { ket: 'Pembayaran Hutang Usaha', h: 0, m: 0, b: 0 },
+          { ket: 'Biaya Lain-lain', h: 0, m: 0, b: 0 }
+        ],
+        cfRtPendapatan: [
+          { ket: 'Gaji dan Upah', h: 0, m: 0, b: 0 },
+          { ket: 'Pensiun', h: 0, m: 0, b: 0 },
+          { ket: 'Sumber Pendapatan Lainnya', h: 0, m: 0, b: 0 }
+        ],
+        cfRtPengeluaran: [
+          { ket: 'Makan dan Minum', h: 0, m: 0, b: 0 },
+          { ket: 'Sewa Rumah', h: 0, m: 0, b: 0 },
+          { ket: 'Biaya Pendidikan (SPP)', h: 0, m: 0, b: 0 },
+          { ket: 'Uang Jajan dan Transport Anak', h: 0, m: 0, b: 0 },
+          { ket: 'Biaya Listrik, Telpon dan Air', h: 0, m: 0, b: 0 },
+          { ket: 'Biaya Transportasi dan Snack', h: 0, m: 0, b: 0 },
+          { ket: 'Biaya Pengobatan', h: 0, m: 0, b: 0 }
+        ],
+        cfMarginPersen: 1.5,
+        cfPlafondDisetujui: 0,
+        cfAngsuranIdeal: 0,
+        cfJangkaWaktuDisetujui: 12,
+        cfTanggal: today,
+        cfAnalisAoa: '',
+        cfPemeriksaKbl: '',
+
+        // Agunan Tanah & Bangunan (Form 012)
+        tTanggal: today,
+        tPemeriksaNama: '',
+        tPemeriksaJabatan: 'AOAP',
+        tSpesifikasi: 'Tanah dan Bangunan',
+        tSuratTanah: 'SHM',
+        tNomorSurat: '',
+        tBatasBarat: '',
+        tBatasUtara: '',
+        tBatasTimur: '',
+        tBatasSelatan: '',
+        tLuasM2: 0,
+        tKondisi: 'tanah dan bangunan',
+        tLokasi: '',
+        tNjopPerM2: 0,
+        tPasarPerM2: 0,
+        tTaksasiTotal: 0,
+        tMaksPencairanPersen: 70,
+        tDasarNilaiPasarPersen: 80,
+        tDibuatDi: '',
+        tTanggalBuat: today,
+        tPembuatAoap: '',
+        tPersetujuanKcp: '',
+
+        // Agunan Kendaraan (Form 010)
+        kTanggal: today,
+        kPemeriksaNama: '',
+        kPemeriksaJabatan: 'AOAP',
+        kJenis: '',
+        kMerek: '',
+        kWarna: '',
+        kTahun: '',
+        kAtasNama: '',
+        kAlamat: '',
+        kKondisi: '',
+        kNopol: '',
+        kNoBpkb: '',
+        kNoRangka: '',
+        kNoMesin: '',
+        kNilaiPasar: 0,
+        kNilaiTaksasi: 0,
+        kMaksPencairanPersen: 70,
+        kDasarNilaiPasarPersen: 80,
+        kDibuatDi: '',
+        kTanggalBuat: today,
+        kPembuatAoap: '',
+        kPersetujuanKcp: '',
+
+        // Surat Pernyataan
+        spTanggal: today
+      };
+    }
+
+    function createSampleRecord() {
+      const r = createBlankRecord();
+      r.id = 'REC-SAMPLE-FAUZI';
+      r.cabang = 'Pasuruan / Kraton';
+      r.capem = '';
+      r.namaLengkap = 'H. Ahmad Fauzi Al-Mubarok';
+      r.bin = 'H. Abdul Ghofur';
+      r.jenisKelamin = 'Pria';
+      r.tempatLahir = 'Pasuruan';
+      r.tglLahir = '14';
+      r.blnLahir = '05';
+      r.thnLahir = '1986';
+      r.nikKtp = '3514121405860003';
+      r.noHp = '081234567890';
+      r.statusPerkawinan = 'Nikah';
+      r.lamaNikah = '14';
+      r.alamatKtp = 'Jl. Raya Sidogiri No. 45';
+      r.rtRwKtp = '002/004';
+      r.kelDesaKtp = 'Sidogiri';
+      r.kecamatanKtp = 'Kraton';
+      r.kabKotaKtp = 'Pasuruan';
+      r.propinsiKtp = 'Jawa Timur';
+      r.kodePosKtp = '67151';
+      r.alamatDomisili = 'Jl. Raya Sidogiri No. 45';
+      r.rtRwDomisili = '002/004';
+      r.kelDesaDomisili = 'Sidogiri';
+      r.kecamatanDomisili = 'Kraton';
+      r.kabKotaDomisili = 'Pasuruan';
+      r.propinsiDomisili = 'Jawa Timur';
+      r.statusTempatTinggal = 'Hak milik';
+      r.tahunTinggal = '2012';
+      r.pendidikanTerakhir = 'S1, S2';
+      r.sumberPendapatan = ['Dagang', 'Wiraswasta'];
+      r.lamaUsaha = '8';
+      r.tempatKerjaUsaha = 'Toko Grosir Sembako Barokah Jaya';
+      r.perusahaanInstansi = 'UD. Barokah Jaya';
+      r.jabatanKerja = 'Pemilik Usaha';
+      r.kerjaDariTh = '2018';
+      r.kerjaSampaiTh = '2026';
+      r.pendapatanKategori = '> 3,000,000,-';
+      r.pendapatanNominal = 12500000;
+      r.org1Nama = 'MWC NU Kraton';
+      r.org1Jabatan = 'Bendahara';
+      r.org1Status = 'Aktif';
+      r.org1Dari = '2021';
+      r.org1Sampai = '2026';
+      r.tanggunganPasangan = '1 (Hj. Siti Aminah)';
+      r.tanggunganAnak = '2 Anak';
+      r.tanggunganOrtu = '1 Ibu';
+      r.tanggunganLain = '-';
+      r.pinjamanLainKet = 'Tidak ada pinjaman di bank/lembaga lain';
+      r.penanggungJawabNama = 'Hj. Siti Aminah';
+      r.penanggungJawabStatus = 'Suami / Istri';
+      r.penanggungJawabHp1 = '085731223344';
+      r.jumlahPengajuan = 50000000;
+      r.untukKeperluan = 'Penambahan modal stok barang grosir sembako';
+      r.jangkaWaktu = 24;
+      r.satuanJangkaWaktu = 'Bulan';
+      r.akadPembiayaan = 'Jual Beli';
+      r.keteranganAkad = 'Murabahah Modal Kerja';
+      r.agunanBerupa = 'Sebidang Tanah Pekarangan dan Bangunan Rumah Tinggal';
+      r.statusKepemilikanAgunan = 'Hak milik';
+      r.suratAgunan = ['SHM'];
+      r.namaPemohon = 'H. Ahmad Fauzi Al-Mubarok';
+      r.namaWali = 'Hj. Siti Aminah';
+      r.namaAosp = 'Ust. Muhammad Ridwan, S.E.';
+
+      // BA Survey
+      r.baSurveyorNama = 'Ust. Muhammad Ridwan, S.E.';
+      r.baSurveyorJabatan = 'AOA / AOAP';
+      r.baKarakter = 'Sangat Bagus';
+      r.baPermodalan = 'Sangat Bagus';
+      r.baPendapatan = 'Sangat Bagus';
+      r.baLingkungan = 'Sangat Bagus';
+      r.baAgunan = 'Sangat Bagus';
+      r.baBentukAgunan = ['Tanah'];
+
+      // Questioner 39
+      const sampleAns = ['d','d','d','c','d','d','d','d','d','d','d','d','c','d','d','b','d','d','d','c','d','d','d','d','d','d','d','c','b','d','c','d','c','c','d','d','d','d','d'];
+      sampleAns.forEach((v, i) => { r.qAnswers[i + 1] = v; });
+      r.qPotensiMasalah = 'Persaingan harga grosir di sekitar pasar; ditanggulangi dengan kontrak suplai rutin ke toko kelontong desa.';
+      r.qKesimpulan = 'Calon debitur amanah, usaha grosir berjalan lancar & menguntungkan, agunan SHM atas nama sendiri sangat layak.';
+      r.qSurveyorAoa = 'Ust. Muhammad Ridwan, S.E.';
+      r.qPemeriksaKpl = 'H. Lukman Hakim, M.M.';
+
+      // Cashflow
+      r.cfUsahaPendapatan[0].h = 2200000; // x30 = 66jt
+      r.cfUsahaPendapatan[1].ket = 'Penjualan Agen Gas & Galon';
+      r.cfUsahaPendapatan[1].b = 3500000;
+      r.cfUsahaPengeluaran[0].h = 1650000; // x30 = 49.5jt
+      r.cfUsahaPengeluaran[1].b = 3500000;
+      r.cfUsahaPengeluaran[2].b = 650000;
+      r.cfUsahaPengeluaran[4].h = 50000; // x30 = 1.5jt
+      r.cfRtPendapatan[0].b = 2500000;
+      r.cfRtPengeluaran[0].h = 100000; // x30 = 3jt
+      r.cfRtPengeluaran[2].b = 800000;
+      r.cfRtPengeluaran[3].h = 25000; // x30 = 750rb
+      r.cfRtPengeluaran[4].b = 450000;
+      r.cfMarginPersen = 1.5;
+      r.cfPlafondDisetujui = 50000000;
+      r.cfAngsuranIdeal = 2833333;
+      r.cfJangkaWaktuDisetujui = 24;
+      r.cfAnalisAoa = 'Ust. Muhammad Ridwan, S.E.';
+      r.cfPemeriksaKbl = 'H. Lukman Hakim, M.M.';
+
+      // Agunan Tanah
+      r.tPemeriksaNama = 'Ust. Muhammad Ridwan, S.E.';
+      r.tSpesifikasi = 'Tanah dan Bangunan';
+      r.tSuratTanah = 'SHM';
+      r.tNomorSurat = 'SHM No. 01428 / Desa Sidogiri';
+      r.tBatasBarat = 'Musholla Al-Ikhlas';
+      r.tBatasUtara = 'Rumah H. Sulaiman';
+      r.tBatasTimur = 'Jalan Desa Paving';
+      r.tBatasSelatan = 'Tanah Bpk. Nur Kholis';
+      r.tLuasM2 = 120;
+      r.tKondisi = 'tanah dan bangunan';
+      r.tLokasi = 'Jl. Raya Sidogiri RT 002 RW 004 Desa Sidogiri Kec. Kraton Kab. Pasuruan';
+      r.tNjopPerM2 = 700000;
+      r.tPasarPerM2 = 1250000;
+      r.tTaksasiTotal = 120000000;
+      r.tMaksPencairanPersen = 70;
+      r.tDasarNilaiPasarPersen = 80;
+      r.tDibuatDi = 'Pasuruan';
+      r.tPembuatAoap = 'Ust. Muhammad Ridwan, S.E.';
+      r.tPersetujuanKcp = 'H. Lukman Hakim, M.M.';
+
+      // Agunan Kendaraan
+      r.kPemeriksaNama = 'Ust. Muhammad Ridwan, S.E.';
+      r.kJenis = 'Mobil Pick Up';
+      r.kMerek = 'Suzuki Carry Pick Up 1.5 FD';
+      r.kWarna = 'Hitam';
+      r.kTahun = '2021';
+      r.kAtasNama = 'H. Ahmad Fauzi Al-Mubarok';
+      r.kAlamat = 'Jl. Raya Sidogiri No. 45 Kraton Pasuruan';
+      r.kKondisi = 'Baik, terawat, pajak hidup';
+      r.kNopol = 'N 8492 TD';
+      r.kNoBpkb = 'Q-08912345';
+      r.kNoRangka = 'MHYESL415MJ129834';
+      r.kNoMesin = 'K15BT1187432';
+      r.kNilaiPasar = 95000000;
+      r.kNilaiTaksasi = 80000000;
+      r.kMaksPencairanPersen = 70;
+      r.kDasarNilaiPasarPersen = 84;
+      r.kDibuatDi = 'Pasuruan';
+      r.kPembuatAoap = 'Ust. Muhammad Ridwan, S.E.';
+      r.kPersetujuanKcp = 'H. Lukman Hakim, M.M.';
+
+      return r;
+    }
+
+    function loadAllData() {
+      try {
+        customKopBase64 = localStorage.getItem(KOP_STORAGE_KEY) || null;
+        const raw = localStorage.getItem(APP_STORAGE_KEY);
+        if (raw) {
+          appList = JSON.parse(raw);
+        }
+        if (!Array.isArray(appList) || appList.length === 0) {
+          appList = [createSampleRecord()];
+          saveAllData(false);
+        }
+        activeId = appList[0].id;
+      } catch (e) {
+        appList = [createSampleRecord()];
+        activeId = appList[0].id;
+      }
+    }
+
+    let toastTimer = null;
+    function saveAllData(showNotif = true) {
+      try {
+        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appList));
+        if (showNotif) {
+          const el = document.getElementById('save-toast');
+          el.classList.remove('opacity-0');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => el.classList.add('opacity-0'), 1400);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function getRec() {
+      return appList.find(x => x.id === activeId) || appList[0];
+    }
+
+    // =========================================================================
+    // 4. UPLOAD & RENDER KOP SURAT RESMI (BASE64 PERSISTENT + VECTOR FALLBACK)
+    // =========================================================================
+    function handleKopUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        customKopBase64 = e.target.result;
+        try {
+          localStorage.setItem(KOP_STORAGE_KEY, customKopBase64);
+        } catch (err) {
+          console.warn('Gambar terlalu besar untuk localStorage, tetap aktif di sesi ini.');
+        }
+        renderTopBar();
+        renderPaper();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetKopImage() {
+      customKopBase64 = null;
+      localStorage.removeItem(KOP_STORAGE_KEY);
+      renderTopBar();
+      renderPaper();
+    }
+
+    function renderKopSurat() {
+      if (customKopBase64) {
+        return `
+          <div style="width: 100%; margin-bottom: 4px; text-align: center;">
+            <img src="${customKopBase64}" alt="Kop Surat KSPPS BMT UGT Nusantara" style="width: 100%; max-height: 115px; object-fit: contain; display: block; margin: 0 auto;" />
+          </div>
+        `;
+      }
+      // Kop Bawaan Persis Gambar Kop Resmi (Logo Koperasi Indonesia + Teks Tengah + Logo UGT)
+      return `
+        <div style="width: 100%; padding: 2px 0 4px 0; margin-bottom: 4px; font-family: Arial, Helvetica, sans-serif;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <!-- Logo Koperasi Indonesia Berwarna -->
+            <div style="width: 62px; height: 62px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 140 140" width="60" height="60">
+                <!-- Roda Gigi Kuning -->
+                <circle cx="70" cy="70" r="56" fill="none" stroke="#facc15" stroke-width="11" stroke-dasharray="15 5"/>
+                <circle cx="70" cy="70" r="50" fill="none" stroke="#111827" stroke-width="1.5"/>
+                <!-- Lingkaran Dalam Merah Putih -->
+                <circle cx="70" cy="70" r="46" fill="#ffffff" stroke="#111827" stroke-width="1.5"/>
+                <path d="M24 70 A46 46 0 0 1 116 70 Z" fill="#dc2626"/>
+                <!-- Pohon Beringin Hijau -->
+                <path d="M70 38 C52 38 42 52 46 68 C49 78 58 83 64 95 H76 C82 83 91 78 94 68 C98 52 88 38 70 38 Z" fill="#16a34a" stroke="#111827" stroke-width="1.2"/>
+                <!-- Perisai Bintang & Timbangan -->
+                <rect x="61" y="29" width="18" height="17" fill="#1f2937" stroke="#ffffff" stroke-width="1"/>
+                <polygon points="70,31 72,36 77,36 73,39 74,44 70,41 66,44 67,39 63,36 68,36" fill="#ffffff"/>
+                <line x1="46" y1="45" x2="94" y2="45" stroke="#facc15" stroke-width="2.5"/>
+                <polygon points="46,45 41,55 51,55" fill="#facc15" stroke="#111827" stroke-width="0.8"/>
+                <polygon points="94,45 89,55 99,55" fill="#facc15" stroke="#111827" stroke-width="0.8"/>
+                <!-- Pita Bawah -->
+                <path d="M35 104 Q70 116 105 104 L100 114 Q70 125 40 114 Z" fill="#ffffff" stroke="#111827" stroke-width="1.2"/>
+                <text x="70" y="113" font-size="7.5" font-weight="bold" text-anchor="middle" fill="#111827">KOPERASI INDONESIA</text>
+              </svg>
+            </div>
+
+            <!-- Teks Tengah Resmi -->
+            <div style="flex: 1; text-align: center; line-height: 1.15;">
+              <div style="font-size: 9pt; font-weight: 700; color: #000000; letter-spacing: 0.3px;">
+                KOPERASI SIMPAN PINJAM SYARIAH DAN PEMBIAYAAN SYARIAH
+              </div>
+              <div style="font-size: 16.5pt; font-weight: 900; color: #1b6b50; letter-spacing: 0.6px; margin: 1px 0;">
+                BMT UGT NUSANTARA
+              </div>
+              <div style="font-size: 10.5pt; font-style: italic; font-weight: 600; color: #000000;">
+                Usaha Gabungan Terpadu
+              </div>
+              <div style="border-top: 1px solid #000000; width: 78%; margin: 3px auto 2px auto;"></div>
+              <div style="font-size: 7.5pt; color: #000000;">
+                Badan Hukum : AHU - 0002288.AH.01.28.TAHUN 2020 ( 31 Desember 2020 )
+              </div>
+            </div>
+
+            <!-- Logo UGT Lingkaran Hijau Kanan -->
+            <div style="width: 58px; height: 62px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+              <svg viewBox="0 0 100 110" width="54" height="60">
+                <ellipse cx="50" cy="55" rx="45" ry="50" fill="#146350"/>
+                <!-- Huruf U -->
+                <path d="M22 30 V62 C22 73 30 79 41 79 C52 79 58 72 58 62 V30 H47 V61 C47 66 44 68 40 68 C36 68 33 66 33 61 V30 Z" fill="#ffffff"/>
+                <!-- Huruf G & T menyatu -->
+                <path d="M43 46 H79 V56 H66 V79 H55 V56 H43 Z" fill="#ffffff"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 5. SINKRONISASI DATA ANTAR-LEMBAR & KALKULASI OTOMATIS
+    // =========================================================================
+    function syncAllDomFields(r, sourceEl = null) {
+      // Sinkronisasi input teks biasa berdasarkan atribut data-sync-path
+      document.querySelectorAll('[data-sync-path]').forEach(el => {
+        if (el === sourceEl) return;
+        const p = el.dataset.syncPath;
+        const val = getPathVal(r, p);
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.value = val !== undefined && val !== null ? String(val) : '';
+        } else {
+          el.textContent = val !== undefined && val !== null && val !== '' ? String(val) : '....................';
+        }
+      });
+
+      // Sinkronisasi input angka berdasarkan atribut data-num-path
+      document.querySelectorAll('[data-num-path]').forEach(el => {
+        if (el === sourceEl) return;
+        const allowDec = el.dataset.allowDecimal === 'true';
+        const numVal = Number(getPathVal(r, el.dataset.numPath)) || 0;
+        if (allowDec) {
+          el.value = numVal !== 0 ? String(numVal) : '';
+        } else {
+          el.value = numVal !== 0 ? fmtRp(numVal) : '';
+        }
+      });
+
+      // Sinkronisasi gabungan alamat KTP & TTL
+      const alamatFull = [r.alamatKtp, r.rtRwKtp ? 'RT/RW ' + r.rtRwKtp : '', r.kelDesaKtp, r.kecamatanKtp, r.kabKotaKtp].filter(Boolean).join(', ');
+      document.querySelectorAll('.sync-alamat-full').forEach(el => {
+        if (el !== sourceEl) el.value = alamatFull;
+      });
+      const alamatShort = [r.alamatKtp, r.kecamatanKtp, r.kabKotaKtp].filter(Boolean).join(', ');
+      document.querySelectorAll('.sync-alamat-short').forEach(el => {
+        if (el !== sourceEl) el.value = alamatShort;
+      });
+      const ttlShort = [r.tglLahir, r.blnLahir, r.thnLahir].filter(Boolean).join('-');
+      document.querySelectorAll('.sync-ttl-short').forEach(el => {
+        if (el !== sourceEl) el.value = ttlShort;
+      });
+      const agunanSummary = (r.suratAgunan || []).join(', ') + (r.agunanBerupa ? ' - ' + r.agunanBerupa : '');
+      document.querySelectorAll('.sync-agunan-summary').forEach(el => {
+        if (el !== sourceEl) el.value = agunanSummary;
+      });
+    }
+
+    function setVal(path, value, refresh = false, sourceEl = null) {
+      const r = getRec();
+      const parts = path.split('.');
+      let target = r;
+      for (let i = 0; i < parts.length - 1; i++) {
+        target = target[parts[i]];
+      }
+      target[parts[parts.length - 1]] = value;
+
+      // Sinkronisasi otomatis lintas formulir
+      if (path === 'namaLengkap') {
+        r.namaPemohon = value;
+        renderTopBar();
+      }
+      if (path === 'namaAosp') {
+        r.baSurveyorNama = value;
+        r.qSurveyorAoa = value;
+        r.cfAnalisAoa = value;
+        r.tPemeriksaNama = value;
+        r.tPembuatAoap = value;
+        r.kPemeriksaNama = value;
+        r.kPembuatAoap = value;
+      }
+      if (path === 'jumlahPengajuan') {
+        if (!r.cfPlafondDisetujui) r.cfPlafondDisetujui = Number(value) || 0;
+      }
+      if (path === 'jangkaWaktu') {
+        r.cfJangkaWaktuDisetujui = Number(value) || 12;
+      }
+
+      saveAllData(true);
+      if (refresh) {
+        renderPaper();
+      } else {
+        syncAllDomFields(r, sourceEl);
+      }
+    }
+
+    function toggleArr(path, item) {
+      const r = getRec();
+      const arr = r[path] || [];
+      const idx = arr.indexOf(item);
+      if (idx >= 0) arr.splice(idx, 1);
+      else arr.push(item);
+      r[path] = arr;
+      saveAllData(true);
+      renderPaper();
+    }
+
+    function calcQuestioner(r) {
+      const map = { a: 10, b: 30, c: 70, d: 100 };
+      let sum = 0;
+      let count = 0;
+      for (let i = 1; i <= 39; i++) {
+        const ans = r.qAnswers[i];
+        if (ans && map[ans] !== undefined) {
+          sum += map[ans];
+          count++;
+        }
+      }
+      const skor = count > 0 ? Math.round((sum / count) * 100) / 100 : 0;
+      let kategori = '-';
+      if (count > 0) {
+        if (skor < 55) kategori = 'Tidak layak';
+        else if (skor < 70) kategori = 'Kurang layak';
+        else if (skor < 80) kategori = 'Cukup layak';
+        else if (skor < 90) kategori = 'Layak';
+        else kategori = 'Sangat layak';
+      }
+      return { sum, count, skor, kategori };
+    }
+
+    function calcCashflow(r) {
+      const konv = (row) => (Number(row.h) || 0) * 30 + (Number(row.m) || 0) * 4 + (Number(row.b) || 0);
+      const totPendUsaha = r.cfUsahaPendapatan.reduce((s, x) => s + konv(x), 0);
+      const totPengUsaha = r.cfUsahaPengeluaran.reduce((s, x) => s + konv(x), 0);
+      const bersihUsaha = totPendUsaha - totPengUsaha;
+
+      const totPendRt = r.cfRtPendapatan.reduce((s, x) => s + konv(x), 0);
+      const totPengRt = r.cfRtPengeluaran.reduce((s, x) => s + konv(x), 0);
+      const bersihPerbulan = bersihUsaha + totPendRt - totPengRt;
+
+      const plafon = Number(r.jumlahPengajuan) || 0;
+      const tenor = Number(r.jangkaWaktu) || 1;
+      const marginPct = Number(r.cfMarginPersen) || 0;
+      const marginRp = Math.round(plafon * (marginPct / 100));
+      const angsuran = Math.round(plafon / tenor) + marginRp;
+
+      const persenAngsuran = bersihPerbulan > 0 ? Math.round((angsuran / bersihPerbulan) * 1000) / 10 : 0;
+
+      let kemampuan = 'a. Tidak Mampu';
+      if (bersihPerbulan > 0) {
+        if (persenAngsuran <= 30) kemampuan = 'd. Sangat Mampu';
+        else if (persenAngsuran <= 45) kemampuan = 'c. Mampu';
+        else if (persenAngsuran <= 65) kemampuan = 'b. Kurang Mampu';
+        else kemampuan = 'a. Tidak Mampu';
+      }
+
+      return {
+        konv, totPendUsaha, totPengUsaha, bersihUsaha,
+        totPendRt, totPengRt, bersihPerbulan,
+        plafon, tenor, marginPct, marginRp, angsuran,
+        persenAngsuran, kemampuan
+      };
+    }
+
+    // =========================================================================
+    // 6. RENDER 8 LEMBAR FORMULIR KERTAS A4 (1:1 DENGAN PDF ASLI)
+    // =========================================================================
+    function chkHtml(isChecked, label, onclickJs) {
+      return `<span class="paper-chk ${isChecked ? 'checked' : ''}" onclick="${onclickJs}"><span class="paper-chk-box">${isChecked ? '✓' : '&nbsp;'}</span><span>${label}</span></span>`;
+    }
+
+    // -------------------- LEMBAR 1: PMB/FRM/001/REV01 --------------------
+    function renderSheet1(r) {
+      const sumberOpts = ['Tani', 'Dagang', 'PNS', 'Swasta', 'Buruh', 'Tidak bekerja', 'Wiraswasta'];
+      const pinjamOpts = ['Perorangan', 'Bank / BPR', 'Koperasi', 'Pegadaian', 'Leasing', 'Lainnya'];
+      const suratOpts = ['BPKB', 'SHM', 'SHGB', 'SHGU', 'Letter C', 'SKT', 'Pettok D', 'Electronic'];
+
+      return `
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 8.5pt;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+            <div style="border: 1px solid #000; padding: 2px 6px; font-weight: bold;">PMB/FRM/001/REV01</div>
+          </div>
+
+          <div style="text-align: center; font-weight: bold; font-size: 11.5pt; text-decoration: underline; margin: 4px 0 6px 0;">
+            FORMULIR PERMOHONAN PEMBIAYAAN
+          </div>
+
+          <div style="margin-bottom: 3px;">Yang bertanda tangan di bawah ini:</div>
+
+          <table class="layout-table" style="font-size: 8.8pt;">
+            <tr>
+              <td style="width: 145px;">Nama lengkap</td>
+              <td style="width: 8px;">:</td>
+              <td>
+                <input class="paper-input" data-sync-path="namaLengkap" style="width: 245px;" value="${esc(r.namaLengkap)}" oninput="setVal('namaLengkap', this.value, false, this)" placeholder="Nama sesuai KTP" />
+                &nbsp; Bin : <input class="paper-input" data-sync-path="bin" style="width: 155px;" value="${esc(r.bin)}" oninput="setVal('bin', this.value, false, this)" placeholder="Nama ayah" />
+              </td>
+            </tr>
+            <tr>
+              <td>Jenis kelamin</td>
+              <td>:</td>
+              <td>
+                <span class="strike-opt ${r.jenisKelamin === 'Pria' ? 'active-opt' : 'crossed'}" onclick="setVal('jenisKelamin', 'Pria', true)">Pria</span> /
+                <span class="strike-opt ${r.jenisKelamin === 'Wanita' ? 'active-opt' : 'crossed'}" onclick="setVal('jenisKelamin', 'Wanita', true)">Wanita</span>*
+                &nbsp;&nbsp;&nbsp; NIK KTP : <input class="paper-input" data-sync-path="nikKtp" style="width: 195px;" value="${esc(r.nikKtp)}" oninput="setVal('nikKtp', this.value, false, this)" placeholder="16 digit NIK" />
+              </td>
+            </tr>
+            <tr>
+              <td>Tempat dan tgl lahir</td>
+              <td>:</td>
+              <td>
+                <input class="paper-input" data-sync-path="tempatLahir" style="width: 150px;" value="${esc(r.tempatLahir)}" oninput="setVal('tempatLahir', this.value, false, this)" placeholder="Kota lahir" /> ,
+                Tgl <input class="paper-input" data-sync-path="tglLahir" style="width: 28px; text-align: center;" value="${esc(r.tglLahir)}" oninput="setVal('tglLahir', this.value, false, this)" placeholder=".." />
+                Bln <input class="paper-input" data-sync-path="blnLahir" style="width: 28px; text-align: center;" value="${esc(r.blnLahir)}" oninput="setVal('blnLahir', this.value, false, this)" placeholder=".." />
+                Thn <input class="paper-input" data-sync-path="thnLahir" style="width: 45px; text-align: center;" value="${esc(r.thnLahir)}" oninput="setVal('thnLahir', this.value, false, this)" placeholder="...." />
+              </td>
+            </tr>
+            <tr>
+              <td>No Telp / Hp</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="noHp" style="width: 220px;" value="${esc(r.noHp)}" oninput="setVal('noHp', this.value, false, this)" placeholder="08xxxxxxxxxx" /></td>
+            </tr>
+            <tr>
+              <td>Status Perkawinan</td>
+              <td>:</td>
+              <td>
+                ${['Belum nikah', 'Nikah', 'Cerai hidup', 'Cerai mati'].map(st =>
+                  `<span class="strike-opt ${r.statusPerkawinan === st ? 'active-opt' : 'crossed'}" onclick="setVal('statusPerkawinan', '${st}', true)">${st}</span>`
+                ).join(' / ')}
+                &nbsp; sudah: <input class="paper-input" style="width: 35px; text-align: center;" value="${esc(r.lamaNikah)}" oninput="setVal('lamaNikah', this.value)" /> tahun
+              </td>
+            </tr>
+            <tr>
+              <td>Alamat (sesuai KTP)</td>
+              <td>:</td>
+              <td>
+                <input class="paper-input" data-sync-path="alamatKtp" style="width: 315px;" value="${esc(r.alamatKtp)}" oninput="setVal('alamatKtp', this.value, false, this)" placeholder="Jalan / Dusun" />
+                &nbsp; RT/RW : <input class="paper-input" data-sync-path="rtRwKtp" style="width: 75px;" value="${esc(r.rtRwKtp)}" oninput="setVal('rtRwKtp', this.value, false, this)" placeholder="00/00" />
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                Kel / Desa : <input class="paper-input" data-sync-path="kelDesaKtp" style="width: 145px;" value="${esc(r.kelDesaKtp)}" oninput="setVal('kelDesaKtp', this.value, false, this)" />
+                &nbsp; Kecamatan : <input class="paper-input" data-sync-path="kecamatanKtp" style="width: 155px;" value="${esc(r.kecamatanKtp)}" oninput="setVal('kecamatanKtp', this.value, false, this)" />
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                Kab / Kota : <input class="paper-input" data-sync-path="kabKotaKtp" style="width: 135px;" value="${esc(r.kabKotaKtp)}" oninput="setVal('kabKotaKtp', this.value, false, this)" />
+                Propinsi : <input class="paper-input" data-sync-path="propinsiKtp" style="width: 110px;" value="${esc(r.propinsiKtp)}" oninput="setVal('propinsiKtp', this.value, false, this)" />
+                Kode Pos : <input class="paper-input" data-sync-path="kodePosKtp" style="width: 55px;" value="${esc(r.kodePosKtp)}" oninput="setVal('kodePosKtp', this.value, false, this)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Domisili / Tmpt tinggal</td>
+              <td>:</td>
+              <td>
+                <input class="paper-input" style="width: 315px;" value="${esc(r.alamatDomisili)}" oninput="setVal('alamatDomisili', this.value)" />
+                &nbsp; RT/RW : <input class="paper-input" style="width: 75px;" value="${esc(r.rtRwDomisili)}" oninput="setVal('rtRwDomisili', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                Kel / Desa : <input class="paper-input" style="width: 145px;" value="${esc(r.kelDesaDomisili)}" oninput="setVal('kelDesaDomisili', this.value)" />
+                &nbsp; Kecamatan : <input class="paper-input" style="width: 155px;" value="${esc(r.kecamatanDomisili)}" oninput="setVal('kecamatanDomisili', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                Kab / Kota : <input class="paper-input" style="width: 175px;" value="${esc(r.kabKotaDomisili)}" oninput="setVal('kabKotaDomisili', this.value)" />
+                &nbsp; Propinsi : <input class="paper-input" style="width: 165px;" value="${esc(r.propinsiDomisili)}" oninput="setVal('propinsiDomisili', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Status tempat tinggal</td>
+              <td>:</td>
+              <td>
+                ${['Hak milik', 'Kontrak', 'Menumpang wali', 'Rumah dinas', 'Kos'].map(st =>
+                  `<span class="strike-opt ${r.statusTempatTinggal === st ? 'active-opt' : 'crossed'}" onclick="setVal('statusTempatTinggal', '${st}', true)">${st}</span>`
+                ).join(' / ')}
+                * Tahun: <input class="paper-input" style="width: 45px;" value="${esc(r.tahunTinggal)}" oninput="setVal('tahunTinggal', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Pendidikan Terakhir</td>
+              <td>:</td>
+              <td>
+                ${['MI/SD', 'SLTP', 'SLTA', 'D1, D2', 'S1, S2'].map(p =>
+                  `<span class="strike-opt ${r.pendidikanTerakhir === p ? 'active-opt' : 'crossed'}" onclick="setVal('pendidikanTerakhir', '${p}', true)">${p}</span>`
+                ).join(' / ')} / .........
+              </td>
+            </tr>
+            <tr>
+              <td>Sumber Pendapatan</td>
+              <td>:</td>
+              <td>
+                ${sumberOpts.map(s => chkHtml((r.sumberPendapatan || []).includes(s), s, `toggleArr('sumberPendapatan', '${s}')`)).join('')}
+                <br/>
+                ${chkHtml((r.sumberPendapatan || []).includes('Lain-lain'), 'Lain-lain:', `toggleArr('sumberPendapatan', 'Lain-lain')`)}
+                <input class="paper-input" style="width: 150px;" value="${esc(r.sumberPendapatanLain)}" oninput="setVal('sumberPendapatanLain', this.value)" />
+                &nbsp;&nbsp; Sudah : <input class="paper-input" style="width: 35px; text-align: center;" value="${esc(r.lamaUsaha)}" oninput="setVal('lamaUsaha', this.value)" /> tahun
+              </td>
+            </tr>
+            <tr>
+              <td>Tempat Kerja / Usaha</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 100%;" value="${esc(r.tempatKerjaUsaha)}" oninput="setVal('tempatKerjaUsaha', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Perusahaan / Instansi</td>
+              <td>:</td>
+              <td>
+                <input class="paper-input" style="width: 185px;" value="${esc(r.perusahaanInstansi)}" oninput="setVal('perusahaanInstansi', this.value)" />
+                Jabatan : <input class="paper-input" style="width: 115px;" value="${esc(r.jabatanKerja)}" oninput="setVal('jabatanKerja', this.value)" />
+                th <input class="paper-input" style="width: 38px;" value="${esc(r.kerjaDariTh)}" oninput="setVal('kerjaDariTh', this.value)" />
+                s/d <input class="paper-input" style="width: 38px;" value="${esc(r.kerjaSampaiTh)}" oninput="setVal('kerjaSampaiTh', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Pendapatan tetap / rata</td>
+              <td>:</td>
+              <td>
+                ${chkHtml(r.pendapatanKategori === '< 2,000,000,-', '< 2,000,000,-', `setVal('pendapatanKategori', '< 2,000,000,-', true)`)}
+                ${chkHtml(r.pendapatanKategori === '> 2,000,000,-', '> 2,000,000,-', `setVal('pendapatanKategori', '> 2,000,000,-', true)`)}
+                ${chkHtml(r.pendapatanKategori === '> 3,000,000,-', '> 3,000,000,-', `setVal('pendapatanKategori', '> 3,000,000,-', true)`)}
+                Rp ${numInputHtml('pendapatanNominal', r.pendapatanNominal, { style: 'width: 110px; text-align: right;' })}
+              </td>
+            </tr>
+            <tr>
+              <td>Organisasi</td>
+              <td>:</td>
+              <td>
+                1. <input class="paper-input" style="width: 150px;" value="${esc(r.org1Nama)}" oninput="setVal('org1Nama', this.value)" />
+                Jabatan : <input class="paper-input" style="width: 95px;" value="${esc(r.org1Jabatan)}" oninput="setVal('org1Jabatan', this.value)" />
+                <span class="strike-opt ${r.org1Status === 'Aktif' ? 'active-opt' : 'crossed'}" onclick="setVal('org1Status', 'Aktif', true)">Aktif</span> /
+                <span class="strike-opt ${r.org1Status === 'Tdk aktif' ? 'active-opt' : 'crossed'}" onclick="setVal('org1Status', 'Tdk aktif', true)">Tdk aktif</span>
+                th <input class="paper-input" style="width: 34px;" value="${esc(r.org1Dari)}" oninput="setVal('org1Dari', this.value)" /> s/d <input class="paper-input" style="width: 34px;" value="${esc(r.org1Sampai)}" oninput="setVal('org1Sampai', this.value)" />
+                <br/>
+                2. <input class="paper-input" style="width: 150px;" value="${esc(r.org2Nama)}" oninput="setVal('org2Nama', this.value)" />
+                Jabatan : <input class="paper-input" style="width: 95px;" value="${esc(r.org2Jabatan)}" oninput="setVal('org2Jabatan', this.value)" />
+                <span class="strike-opt ${r.org2Status === 'Aktif' ? 'active-opt' : 'crossed'}" onclick="setVal('org2Status', 'Aktif', true)">Aktif</span> /
+                <span class="strike-opt ${r.org2Status === 'Tdk aktif' ? 'active-opt' : 'crossed'}" onclick="setVal('org2Status', 'Tdk aktif', true)">Tdk aktif</span>
+                th <input class="paper-input" style="width: 34px;" value="${esc(r.org2Dari)}" oninput="setVal('org2Dari', this.value)" /> s/d <input class="paper-input" style="width: 34px;" value="${esc(r.org2Sampai)}" oninput="setVal('org2Sampai', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Tanggungan Dan Beban Keluarga</td>
+              <td>:</td>
+              <td>
+                1. Suami/Istri: <input class="paper-input" style="width: 120px;" value="${esc(r.tanggunganPasangan)}" oninput="setVal('tanggunganPasangan', this.value)" />
+                &nbsp; 2. Anak: <input class="paper-input" style="width: 120px;" value="${esc(r.tanggunganAnak)}" oninput="setVal('tanggunganAnak', this.value)" />
+                <br/>
+                3. Orang tua: <input class="paper-input" style="width: 125px;" value="${esc(r.tanggunganOrtu)}" oninput="setVal('tanggunganOrtu', this.value)" />
+                &nbsp; 4. Lainnya: <input class="paper-input" style="width: 125px;" value="${esc(r.tanggunganLain)}" oninput="setVal('tanggunganLain', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Pinjaman ke pihak lain</td>
+              <td>:</td>
+              <td>
+                ${pinjamOpts.map(p => chkHtml((r.pinjamanLain || []).includes(p), p, `toggleArr('pinjamanLain', '${p}')`)).join('')}
+                <br/>
+                Keterangan : <input class="paper-input" style="width: 380px;" value="${esc(r.pinjamanLainKet)}" oninput="setVal('pinjamanLainKet', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Ikut bertanggung jawab</td>
+              <td>:</td>
+              <td>
+                <input class="paper-input" style="width: 210px;" value="${esc(r.penanggungJawabNama)}" oninput="setVal('penanggungJawabNama', this.value)" />
+                Status: ${['Suami / Istri', 'Orang tua', 'Anak'].map(st =>
+                  `<span class="strike-opt ${r.penanggungJawabStatus === st ? 'active-opt' : 'crossed'}" onclick="setVal('penanggungJawabStatus', '${st}', true)">${st}</span>`
+                ).join(' / ')}
+                <br/>
+                No Telp. / Hp. : 1. <input class="paper-input" style="width: 160px;" value="${esc(r.penanggungJawabHp1)}" oninput="setVal('penanggungJawabHp1', this.value)" />
+                &nbsp; 2. <input class="paper-input" style="width: 160px;" value="${esc(r.penanggungJawabHp2)}" oninput="setVal('penanggungJawabHp2', this.value)" />
+              </td>
+            </tr>
+          </table>
+
+          <div style="margin: 5px 0 3px 0; font-weight: bold;">Mengajukan permohonan pembiayaan sebagai berikut;</div>
+
+          <table class="layout-table" style="font-size: 8.8pt;">
+            <tr>
+              <td style="width: 145px;">Jumlah Pengajuan</td>
+              <td style="width: 8px;">:</td>
+              <td>
+                Rp ${numInputHtml('jumlahPengajuan', r.jumlahPengajuan, { style: 'width: 145px; font-weight: bold; text-align: right;', afterFn: 'updateSheet1SummaryDom' })}
+                <span class="sync-terbilang-pengajuan-paren" style="font-size: 8pt; font-style: italic;">(${terbilang(r.jumlahPengajuan)})</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Untuk Keperluan</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="untukKeperluan" style="width: 100%;" value="${esc(r.untukKeperluan)}" oninput="setVal('untukKeperluan', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Jangka Waktu</td>
+              <td>:</td>
+              <td>
+                ${numInputHtml('jangkaWaktu', r.jangkaWaktu, { style: 'width: 45px; text-align: center;', placeholder: '12', afterFn: 'updateCashflowSummaryDom' })}
+                ${['Hari', 'Bulan', 'Tahun'].map(sat =>
+                  `<span class="strike-opt ${r.satuanJangkaWaktu === sat ? 'active-opt' : 'crossed'}" onclick="setVal('satuanJangkaWaktu', '${sat}', true)">${sat}</span>`
+                ).join(' / ')}*
+                &nbsp;&nbsp;&nbsp; Akad Pembiayaan :
+                ${['Berbasis Bahas', 'Jual Beli', 'Ujrah'].map(ak =>
+                  `<span class="strike-opt ${r.akadPembiayaan === ak ? 'active-opt' : 'crossed'}" onclick="setVal('akadPembiayaan', '${ak}', true)">${ak}</span>`
+                ).join(' / ')}
+              </td>
+            </tr>
+            <tr>
+              <td>Keterangan Akad</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 100%;" value="${esc(r.keteranganAkad)}" oninput="setVal('keteranganAkad', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Agunan berupa</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="agunanBerupa" style="width: 100%;" value="${esc(r.agunanBerupa)}" oninput="setVal('agunanBerupa', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Untuk Keperluan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 100%;" value="${esc(r.untukKeperluan)}" oninput="setVal('untukKeperluan', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Jangka Waktu</td>
+              <td>:</td>
+              <td>
+                ${numInputHtml('jangkaWaktu', r.jangkaWaktu, { style: 'width: 45px; text-align: center;', placeholder: '12' })}
+                ${['Hari', 'Bulan', 'Tahun'].map(sat =>
+                  `<span class="strike-opt ${r.satuanJangkaWaktu === sat ? 'active-opt' : 'crossed'}" onclick="setVal('satuanJangkaWaktu', '${sat}', true)">${sat}</span>`
+                ).join(' / ')}*
+                &nbsp;&nbsp;&nbsp; Akad Pembiayaan :
+                ${['Berbasis Bahas', 'Jual Beli', 'Ujrah'].map(ak =>
+                  `<span class="strike-opt ${r.akadPembiayaan === ak ? 'active-opt' : 'crossed'}" onclick="setVal('akadPembiayaan', '${ak}', true)">${ak}</span>`
+                ).join(' / ')}
+              </td>
+            </tr>
+            <tr>
+              <td>Keterangan Akad</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 100%;" value="${esc(r.keteranganAkad)}" oninput="setVal('keteranganAkad', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Agunan berupa</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 100%;" value="${esc(r.agunanBerupa)}" oninput="setVal('agunanBerupa', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Keterangan</td>
+              <td>:</td>
+              <td>
+                ${['Hak milik', 'Hak waris', 'Kuasa'].map(kh =>
+                  `<span class="strike-opt ${r.statusKepemilikanAgunan === kh ? 'active-opt' : 'crossed'}" onclick="setVal('statusKepemilikanAgunan', '${kh}', true)">${kh}</span>`
+                ).join(' / ')}*
+              </td>
+            </tr>
+            <tr>
+              <td>Surat Agunan</td>
+              <td>:</td>
+              <td>
+                ${suratOpts.map(s => chkHtml((r.suratAgunan || []).includes(s), s, `toggleArr('suratAgunan', '${s}')`)).join('')}
+                ${chkHtml((r.suratAgunan || []).includes('Lainnya'), 'Lainnya :', `toggleArr('suratAgunan', 'Lainnya')`)}
+                <input class="paper-input" style="width: 110px;" value="${esc(r.suratAgunanLain)}" oninput="setVal('suratAgunanLain', this.value)" />
+              </td>
+            </tr>
+          </table>
+
+          <p style="font-size: 8.2pt; margin: 5px 0 6px 0; text-align: justify;">
+            Demikian permohonan ini kami buat dengan sebenar-benarnya dan kami bersedia untuk dilakukan cek riwayat kredit / pembiayaan kami di lembaga keuangan lain melalui layanan informasi debitur serta sanggup mentaati peraturan BMT-UGT Nusantara yang berkaitan dengan pembiayaan.
+          </p>
+
+          <div style="text-align: right; font-size: 8.5pt; margin-bottom: 3px;">
+            <input class="paper-input" data-sync-path="cabang" style="width: 120px; text-align: right;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" /> ,
+            <input type="date" class="paper-input" data-sync-path="tanggalPermohonan" style="width: 115px;" value="${esc(r.tanggalPermohonan)}" onchange="setVal('tanggalPermohonan', this.value, false, this)" />
+          </div>
+
+          <table class="layout-table" style="text-align: center; font-size: 8.5pt;">
+            <tr>
+              <td style="width: 33%;">
+                Pemohon<br/><br/><br/>
+                ( <input class="paper-input" data-sync-path="namaPemohon" style="width: 145px; text-align: center;" value="${esc(r.namaPemohon || r.namaLengkap)}" oninput="setVal('namaPemohon', this.value, false, this)" /> )
+              </td>
+              <td style="width: 34%;">
+                Suami/Istri / Wali /<br/><br/><br/>
+                ( <input class="paper-input" style="width: 145px; text-align: center;" value="${esc(r.namaWali)}" oninput="setVal('namaWali', this.value)" /> )
+              </td>
+              <td style="width: 33%;">
+                AOSP<br/><br/><br/>
+                ( <input class="paper-input" data-sync-path="namaAosp" style="width: 145px; text-align: center;" value="${esc(r.namaAosp)}" oninput="setVal('namaAosp', this.value, false, this)" /> )
+              </td>
+            </tr>
+          </table>
+          <div style="font-size: 7.5pt; margin-top: 2px;">* Coret yang tidak perlu</div>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 2: PMB/FRM/003/REV01 --------------------
+    function renderSheet2(r) {
+      const extra = r.jadwalExtraRows || [];
+      return `
+        <div class="a4-sheet">
+          <div style="text-align: center; font-weight: bold; font-size: 10pt; letter-spacing: 0.5px; margin-bottom: 2px;">DIVISI PEMBIAYAAN</div>
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin: 4px 0;">
+            <div style="width: 120px;"></div>
+            <div style="font-weight: bold; font-size: 11.5pt; text-decoration: underline;">DAFTAR JADWAL SURVEY</div>
+            <div style="border: 1px solid #000; padding: 2px 6px; font-size: 8pt; font-weight: bold;">PMB/FRM003/REV01</div>
+          </div>
+
+          <table class="layout-table" style="font-size: 8.8pt; margin-bottom: 6px; width: 280px;">
+            <tr>
+              <td style="width: 105px;">Bulan</td><td style="width: 8px;">:</td>
+              <td><input class="paper-input" style="width: 145px;" value="${esc(r.bulanJadwal)}" oninput="setVal('bulanJadwal', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Cabang / Capem</td><td>:</td>
+              <td><input class="paper-input" data-sync-path="cabang" style="width: 145px;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" /></td>
+            </tr>
+          </table>
+
+          <table class="form-table">
+            <thead>
+              <tr>
+                <th style="width: 26px;">NO</th>
+                <th style="width: 64px;">TGL</th>
+                <th style="width: 125px;">ATAS NAMA</th>
+                <th style="width: 85px;">PENGAJUAN PLAFOND</th>
+                <th style="width: 95px;">AGUNAN</th>
+                <th style="width: 110px;">PENGGUNAAN</th>
+                <th style="width: 66px;">JADWAL SURVEY</th>
+                <th style="width: 62px;">STATUS</th>
+                <th style="width: 45px;">PARAF</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Baris 1 Otomatis dari Berkas Aktif -->
+              <tr>
+                <td style="text-align: center;">1</td>
+                <td><input class="cell-input" data-sync-path="tanggalPermohonan" value="${esc(r.tanggalPermohonan)}" oninput="setVal('tanggalPermohonan', this.value, false, this)" /></td>
+                <td><input class="cell-input font-bold" data-sync-path="namaLengkap" value="${esc(r.namaLengkap)}" oninput="setVal('namaLengkap', this.value, false, this)" /></td>
+                <td class="sync-rp-pengajuan" style="text-align: right; font-weight: bold;">${r.jumlahPengajuan ? 'Rp ' + fmtRp(r.jumlahPengajuan) : ''}</td>
+                <td><input class="cell-input sync-agunan-summary" value="${esc((r.suratAgunan || []).join(', ') + (r.agunanBerupa ? ' - ' + r.agunanBerupa : ''))}" oninput="setVal('agunanBerupa', this.value, false, this)" /></td>
+                <td><input class="cell-input" data-sync-path="untukKeperluan" value="${esc(r.untukKeperluan)}" oninput="setVal('untukKeperluan', this.value, false, this)" /></td>
+                <td><input class="cell-input" value="${esc(r.jadwalSurveyTgl)}" oninput="setVal('jadwalSurveyTgl', this.value)" /></td>
+                <td><input class="cell-input" value="${esc(r.jadwalStatus)}" oninput="setVal('jadwalStatus', this.value)" /></td>
+                <td><input class="cell-input" style="text-align: center;" value="${esc(r.jadwalParaf)}" oninput="setVal('jadwalParaf', this.value)" /></td>
+              </tr>
+              <!-- Baris 2 s/d 19 Persis PDF Asli -->
+              ${Array.from({ length: 18 }, (_, i) => {
+                const row = extra[i] || {};
+                return `
+                  <tr>
+                    <td style="text-align: center;">${i + 2}</td>
+                    <td><input class="cell-input" value="${esc(row.tgl || '')}" oninput="setVal('jadwalExtraRows.${i}.tgl', this.value)" /></td>
+                    <td><input class="cell-input" value="${esc(row.atasNama || '')}" oninput="setVal('jadwalExtraRows.${i}.atasNama', this.value)" /></td>
+                    <td><input class="cell-input" style="text-align: right;" value="${esc(row.plafond || '')}" oninput="setVal('jadwalExtraRows.${i}.plafond', this.value)" /></td>
+                    <td><input class="cell-input" value="${esc(row.agunan || '')}" oninput="setVal('jadwalExtraRows.${i}.agunan', this.value)" /></td>
+                    <td><input class="cell-input" value="${esc(row.penggunaan || '')}" oninput="setVal('jadwalExtraRows.${i}.penggunaan', this.value)" /></td>
+                    <td><input class="cell-input" value="${esc(row.jadwalSurvey || '')}" oninput="setVal('jadwalExtraRows.${i}.jadwalSurvey', this.value)" /></td>
+                    <td><input class="cell-input" value="${esc(row.status || '')}" oninput="setVal('jadwalExtraRows.${i}.status', this.value)" /></td>
+                    <td><input class="cell-input" style="text-align: center;" value="${esc(row.paraf || '')}" oninput="setVal('jadwalExtraRows.${i}.paraf', this.value)" /></td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 3: PMB/FRM/053/REV00 --------------------
+    function renderSheet3(r) {
+      const dp = parseTanggalParts(r.baTanggal);
+      const opsi5C = ['Sangat Bagus', 'Cukup Bagus', 'Kurang Bagus', 'Tidak Bagus'];
+      const bentukOpts = ['Tanah', 'Kendaraan', 'Meubeller', 'Elektronika'];
+      const alamatFull = [r.alamatKtp, r.rtRwKtp ? 'RT/RW ' + r.rtRwKtp : '', r.kelDesaKtp, r.kecamatanKtp, r.kabKotaKtp].filter(Boolean).join(', ');
+
+      return `
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 8.5pt;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+            <div style="border: 1px solid #000; padding: 2px 8px; font-weight: bold;">PMB/FRM/053/REV00</div>
+          </div>
+
+          <div style="text-align: center; font-weight: bold; font-size: 12pt; text-decoration: underline; margin: 10px 0 14px 0;">
+            BERITA ACARA SURVEY
+          </div>
+
+          <div style="margin-bottom: 6px;">
+            Pada hari ini <span class="paper-input" style="display: inline-block; min-width: 75px; text-align: center;">${dp.hari}</span>
+            tanggal <span class="paper-input" style="display: inline-block; min-width: 35px; text-align: center;">${dp.tgl}</span>
+            bulan <span class="paper-input" style="display: inline-block; min-width: 85px; text-align: center;">${dp.bln}</span>
+            tahun <span class="paper-input" style="display: inline-block; min-width: 50px; text-align: center;">${dp.thn}</span>
+            <input type="date" class="no-print paper-input" style="width: 115px; font-size: 8pt; margin-left: 6px;" value="${esc(r.baTanggal)}" onchange="setVal('baTanggal', this.value, true)" />
+          </div>
+
+          <div style="margin-bottom: 4px;">Saya yang bertanda tangan di bawah ini:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9.2pt;">
+            <tr>
+              <td style="width: 140px;">Nama lengkap</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" data-sync-path="baSurveyorNama" style="width: 340px;" value="${esc(r.baSurveyorNama)}" oninput="setVal('baSurveyorNama', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.baSurveyorJabatan)}" oninput="setVal('baSurveyorJabatan', this.value)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px;">Menyatakan telah melakukan survey pembiayaan anggota yang bernama:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 12px; font-size: 9.2pt;">
+            <tr>
+              <td style="width: 140px;">Nama Lengkap</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" data-sync-path="namaLengkap" style="width: 360px;" value="${esc(r.namaLengkap)}" oninput="setVal('namaLengkap', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Jenis kelamin</td>
+              <td>:</td>
+              <td>
+                <span class="strike-opt ${r.jenisKelamin === 'Pria' ? 'active-opt' : 'crossed'}" onclick="setVal('jenisKelamin', 'Pria', true)">Lk</span> /
+                <span class="strike-opt ${r.jenisKelamin === 'Wanita' ? 'active-opt' : 'crossed'}" onclick="setVal('jenisKelamin', 'Wanita', true)">Pr</span>
+              </td>
+            </tr>
+            <tr>
+              <td>TTL</td>
+              <td>:</td>
+              <td>
+                <input class="paper-input" data-sync-path="tempatLahir" style="width: 170px;" value="${esc(r.tempatLahir)}" oninput="setVal('tempatLahir', this.value, false, this)" /> ,
+                Tgl <input class="paper-input sync-ttl-short" style="width: 140px;" value="${esc([r.tglLahir, r.blnLahir, r.thnLahir].filter(Boolean).join('-'))}" readonly />
+              </td>
+            </tr>
+            <tr>
+              <td>No KTP</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="nikKtp" style="width: 260px;" value="${esc(r.nikKtp)}" oninput="setVal('nikKtp', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Alamat rumah</td>
+              <td>:</td>
+              <td><input class="paper-input sync-alamat-full" style="width: 440px;" value="${esc(alamatFull)}" oninput="setVal('alamatKtp', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Pengajuan</td>
+              <td>:</td>
+              <td>
+                Rp. ${numInputHtml('jumlahPengajuan', r.jumlahPengajuan, { style: 'width: 150px; text-align: right;', afterFn: 'updateSheet3SummaryDom' })}
+                &nbsp;&nbsp;&nbsp; Jangka Waktu : ${numInputHtml('jangkaWaktu', r.jangkaWaktu, { style: 'width: 45px; text-align: center;', placeholder: '12', afterFn: 'updateCashflowSummaryDom' })} Bulan
+              </td>
+            </tr>
+            <tr>
+              <td>Terbilang</td>
+              <td>:</td>
+              <td>( <span class="paper-input sync-terbilang-pengajuan" style="display: inline-block; min-width: 390px; font-style: italic;">${terbilang(r.jumlahPengajuan)}</span> )</td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 6px; font-weight: bold;">Hasil survei pembiayaan meliputi:</div>
+          <table class="layout-table" style="margin-left: 14px; font-size: 9.2pt;">
+            ${[
+              { key: 'baKarakter', lbl: 'Karakter' },
+              { key: 'baPermodalan', lbl: 'Permodalan' },
+              { key: 'baPendapatan', lbl: 'Pendapatan' },
+              { key: 'baLingkungan', lbl: 'Lingkungan' },
+              { key: 'baAgunan', lbl: 'Agunan' }
+            ].map(row => `
+              <tr>
+                <td style="width: 130px; padding: 4px 0;">${row.lbl}</td>
+                <td style="width: 10px;">:</td>
+                <td style="padding: 4px 0;">
+                  ${opsi5C.map(op => chkHtml(r[row.key] === op, op, `setVal('${row.key}', '${op}', true)`)).join(' &nbsp; ')}
+                </td>
+              </tr>
+            `).join('')}
+            <tr>
+              <td style="padding: 6px 0;">Bentuk Agunan</td>
+              <td>:</td>
+              <td style="padding: 6px 0;">
+                ${bentukOpts.map(b => chkHtml((r.baBentukAgunan || []).includes(b), b, `toggleArr('baBentukAgunan', '${b}')`)).join(' &nbsp;&nbsp; ')}
+              </td>
+            </tr>
+          </table>
+
+          <p style="margin-top: 14px; text-align: justify; line-height: 1.4;">
+            Demikian berita acara survey ini dibuat dengan sebenar-benarnya dan kami sajikan hasil survey dan analisa dalam formulir hasil analisa kelayakan dan analisa keuangan beserta formulir appraisal agunan.
+          </p>
+
+          <div style="margin-top: 28px; display: flex; justify-content: flex-end;">
+            <div style="text-align: center; width: 240px;">
+              <div>
+                <input class="paper-input" data-sync-path="cabang" style="width: 110px; text-align: right;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" /> ,
+                ${dp.tgl} ${dp.bln} ${dp.thn}
+              </div>
+              <div style="margin-top: 2px;">Surveyor dan Analis,</div>
+              <div style="height: 60px;"></div>
+              <div>( <input class="paper-input" data-sync-path="baSurveyorNama" style="width: 165px; text-align: center;" value="${esc(r.baSurveyorNama)}" oninput="setVal('baSurveyorNama', this.value, false, this)" /> )</div>
+              <div style="font-weight: bold; margin-top: 2px;">AOA / AOAP</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 4: PMB/FRM/004/REV00 (39 PERTANYAAN) --------------------
+    function renderSheet4(r) {
+      const qStats = calcQuestioner(r);
+      const ptMap = { a: 10, b: 30, c: 70, d: 100 };
+      const qPart1 = QUESTIONER_39.slice(0, 14);
+      const qPart2 = QUESTIONER_39.slice(14, 28);
+      const qPart3 = QUESTIONER_39.slice(28, 39);
+
+      const renderQuestionsBlock = (list) => list.map(item => {
+        const chosen = r.qAnswers[item.no] || '';
+        const scoreVal = chosen ? ptMap[chosen] : '';
+        return `
+          <div style="margin-bottom: 5px; display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; border-bottom: 0.5px dotted #d1d5db; padding-bottom: 3px;">
+            <div style="flex: 1;">
+              <div style="font-weight: bold; font-size: 8.4pt; margin-bottom: 1.5px;">${item.no}. ${item.q}</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px 8px; padding-left: 12px; font-size: 8pt;">
+                ${['a', 'b', 'c', 'd'].map(k => {
+                  const isSel = chosen === k;
+                  return `
+                    <div class="paper-chk ${isSel ? 'checked' : ''}" style="margin-right: 0; align-items: flex-start;" onclick="setVal('qAnswers.${item.no}', '${k}', true)">
+                      <span class="paper-chk-box" style="margin-top: 1px;">${isSel ? '✓' : '&nbsp;'}</span>
+                      <span><strong>${k}.</strong> ${item.opts[k]}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+            <div style="width: 36px; border: 1px solid #000; text-align: center; font-size: 8pt; font-weight: bold; padding: 2px 0; background: ${scoreVal ? '#e6f4ee' : '#fff'}; flex-shrink: 0;">
+              ${scoreVal || '&nbsp;'}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <!-- Halaman 1 Questioner (No 1 - 14) -->
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 8.5pt;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+            <div style="font-weight: bold; font-size: 11pt; text-decoration: underline;">QUESTIONER SURVEY</div>
+            <div style="border: 1px solid #000; padding: 2px 8px; font-weight: bold;">PMB/FRM/004/REV00</div>
+          </div>
+          <div style="font-size: 8.3pt; margin-bottom: 6px; display: flex; justify-content: space-between; border-bottom: 1px solid #000; padding-bottom: 3px;">
+            <div><strong>A. Jawab dan pilih sesuai penilaian dan hasil surve.</strong> Masing-masing pilihan memiliki nilai, <strong>a:10, b:30, c:70, d:100</strong></div>
+            <div>Pemohon: <strong data-sync-path="namaLengkap">${esc(r.namaLengkap || '-')}</strong></div>
+          </div>
+          ${renderQuestionsBlock(qPart1)}
+        </div>
+
+        <!-- Halaman 2 Questioner (No 15 - 28) -->
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; font-size: 8pt; margin-bottom: 5px; border-bottom: 1px solid #000; padding-bottom: 2px;">
+            <span><strong>QUESTIONER SURVEY (Lanjutan)</strong> - Pemohon: <strong data-sync-path="namaLengkap">${esc(r.namaLengkap || '-')}</strong></span>
+            <span><strong>PMB/FRM/004/REV00</strong></span>
+          </div>
+          ${renderQuestionsBlock(qPart2)}
+        </div>
+
+        <!-- Halaman 3 Questioner (No 29 - 39 + Rumus B + C + D + TTD) -->
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; font-size: 8pt; margin-bottom: 5px; border-bottom: 1px solid #000; padding-bottom: 2px;">
+            <span><strong>QUESTIONER SURVEY (Lanjutan)</strong> - Pemohon: <strong data-sync-path="namaLengkap">${esc(r.namaLengkap || '-')}</strong></span>
+            <span><strong>PMB/FRM/004/REV00</strong></span>
+          </div>
+          ${renderQuestionsBlock(qPart3)}
+
+          <!-- Bagian B: Hasil Perhitungan Otomatis -->
+          <div style="margin-top: 8px; border: 1px solid #000; padding: 6px 8px; font-size: 8.3pt;">
+            <div style="font-weight: bold; margin-bottom: 4px;">
+              B. Hasilnya dijumlahkan dan dibagi quesioner yang terjawab, maka hasilnya adalah nilai dari analisa, jika nilainya:
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: center;">
+              <div style="font-size: 8pt; line-height: 1.35;">
+                <div style="${qStats.kategori === 'Tidak layak' ? 'font-weight:bold; background:#fee2e2; padding:1px 3px;' : ''}">&lt; 55 : tidak layak "Tidak boleh dicairkan"</div>
+                <div style="${qStats.kategori === 'Kurang layak' ? 'font-weight:bold; background:#ffedd5; padding:1px 3px;' : ''}">56 - 69 : kurang layak, recommended "tidak dicairkan"</div>
+                <div style="${qStats.kategori === 'Cukup layak' ? 'font-weight:bold; background:#fef3c7; padding:1px 3px;' : ''}">70 - 79 : cukup layak "dicairkan dengan banyak pertimbangan"</div>
+                <div style="${qStats.kategori === 'Layak' ? 'font-weight:bold; background:#d1fae5; padding:1px 3px;' : ''}">80 - 89 : layak "dicairkan"</div>
+                <div style="${qStats.kategori === 'Sangat layak' ? 'font-weight:bold; background:#bbf7d0; padding:1px 3px;' : ''}">90 - 100 : sangat layak "dicairkan tanpa terkecuali"</div>
+              </div>
+              <div style="border: 1px solid #000; padding: 6px; background: #f9fafb;">
+                <div style="font-weight: bold; margin-bottom: 4px;">Rumus:</div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="text-align: center;">
+                    <div style="border-bottom: 1px solid #000; padding: 0 6px;">Jumlah Point jawaban: <strong>${qStats.sum}</strong></div>
+                    <div style="padding: 0 6px;">Questioner yang terisi: <strong>${qStats.count}</strong></div>
+                  </div>
+                  <div style="font-size: 11pt; font-weight: bold;">= Skor: <span style="text-decoration: underline;">${qStats.skor}</span></div>
+                </div>
+                <div style="margin-top: 6px; font-weight: bold;">
+                  Masuk Kategori:
+                  <span style="${qStats.kategori === 'Tidak layak' ? 'text-decoration:underline; background:#fee2e2; padding:1px 3px;' : 'color:#6b7280;'}">Tidak layak</span> /
+                  <span style="${qStats.kategori === 'Kurang layak' ? 'text-decoration:underline; background:#ffedd5; padding:1px 3px;' : 'color:#6b7280;'}">Kurang layak</span> /
+                  <span style="${qStats.kategori === 'Cukup layak' ? 'text-decoration:underline; background:#fef3c7; padding:1px 3px;' : 'color:#6b7280;'}">Cukup layak</span> /
+                  <span style="${qStats.kategori === 'Layak' ? 'text-decoration:underline; background:#d1fae5; padding:1px 3px;' : 'color:#6b7280;'}">Layak</span> /
+                  <span style="${qStats.kategori === 'Sangat layak' ? 'text-decoration:underline; background:#bbf7d0; padding:1px 3px;' : 'color:#6b7280;'}">Sangat layak</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bagian C & D -->
+          <div style="margin-top: 6px; font-size: 8.5pt;">
+            <div style="font-weight: bold; margin-bottom: 2px;">C. Apa potensi masalahnya dan bagaimana menanggulanginya?</div>
+            <textarea class="paper-textarea" rows="2" oninput="setVal('qPotensiMasalah', this.value)">${esc(r.qPotensiMasalah)}</textarea>
+          </div>
+          <div style="margin-top: 5px; font-size: 8.5pt;">
+            <div style="font-weight: bold; margin-bottom: 2px;">D. Kesimpulan dan keterangan</div>
+            <textarea class="paper-textarea" rows="2" oninput="setVal('qKesimpulan', this.value)">${esc(r.qKesimpulan)}</textarea>
+          </div>
+
+          <div style="text-align: right; font-size: 8.3pt; margin-top: 6px;">
+            <input class="paper-input" data-sync-path="cabang" style="width: 110px; text-align: right;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" /> ,
+            <input type="date" class="paper-input" style="width: 110px;" value="${esc(r.qTanggal)}" onchange="setVal('qTanggal', this.value)" />
+          </div>
+
+          <table class="layout-table" style="text-align: center; font-size: 8.5pt; margin-top: 4px;">
+            <tr>
+              <td style="width: 50%;">
+                Surveyor<br/><br/><br/>
+                ( <input class="paper-input" data-sync-path="qSurveyorAoa" style="width: 160px; text-align: center;" value="${esc(r.qSurveyorAoa)}" oninput="setVal('qSurveyorAoa', this.value, false, this)" /> )<br/>
+                <strong>AOA</strong>
+              </td>
+              <td style="width: 50%;">
+                Pemeriksa<br/><br/><br/>
+                ( <input class="paper-input" style="width: 160px; text-align: center;" value="${esc(r.qPemeriksaKpl)}" oninput="setVal('qPemeriksaKpl', this.value)" /> )<br/>
+                <strong>KPL</strong>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 5: PMB/FRM/005/REV00 (CASHFLOW ANALYSIS) --------------------
+    function renderSheet5(r) {
+      const cf = calcCashflow(r);
+      const alamatFull = [r.alamatKtp, r.kecamatanKtp, r.kabKotaKtp].filter(Boolean).join(', ');
+
+      const renderCfGroup = (arr, pathPrefix, domPrefix) => arr.map((row, idx) => {
+        const monthly = cf.konv(row);
+        return `
+          <tr>
+            <td style="width: 22px; text-align: center;">${idx + 1}.</td>
+            <td><input class="cell-input" value="${esc(row.ket)}" oninput="setVal('${pathPrefix}.${idx}.ket', this.value)" placeholder="Keterangan pos..." /></td>
+            <td style="width: 86px;">${numInputHtml(`${pathPrefix}.${idx}.h`, row.h, { cls: 'cell-input', style: 'width: 100%; text-align: right;', placeholder: '0', afterFn: 'updateCashflowSummaryDom' })}</td>
+            <td style="width: 86px;">${numInputHtml(`${pathPrefix}.${idx}.m`, row.m, { cls: 'cell-input', style: 'width: 100%; text-align: right;', placeholder: '0', afterFn: 'updateCashflowSummaryDom' })}</td>
+            <td style="width: 86px;">${numInputHtml(`${pathPrefix}.${idx}.b`, row.b, { cls: 'cell-input', style: 'width: 100%; text-align: right;', placeholder: '0', afterFn: 'updateCashflowSummaryDom' })}</td>
+            <td id="cf-row-${domPrefix}-${idx}" style="width: 95px; text-align: right; font-weight: bold;">${monthly ? fmtRp(monthly) : '0'}</td>
+          </tr>
+        `;
+      }).join('');
+
+      return `
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+            <div style="font-weight: bold; font-size: 11.5pt; text-decoration: underline;">CASHFLOW ANALYSIS</div>
+            <div style="border: 1px solid #000; padding: 2px 6px; font-size: 8pt; font-weight: bold;">PMB/FRM/005/REV00</div>
+          </div>
+
+          <table class="form-table" style="margin-bottom: 5px;">
+            <tr>
+              <td style="width: 75px; font-weight: bold;">Nama</td>
+              <td><input class="cell-input font-bold" data-sync-path="namaLengkap" value="${esc(r.namaLengkap)}" oninput="setVal('namaLengkap', this.value, false, this)" /></td>
+              <td style="width: 75px; font-weight: bold;">Telephone</td>
+              <td style="width: 150px;"><input class="cell-input" data-sync-path="noHp" value="${esc(r.noHp)}" oninput="setVal('noHp', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold;">Alamat</td>
+              <td colspan="3"><input class="cell-input sync-alamat-short" value="${esc(alamatFull)}" oninput="setVal('alamatKtp', this.value, false, this)" /></td>
+            </tr>
+          </table>
+
+          <table class="form-table" style="font-size: 7.9pt;">
+            <thead>
+              <tr>
+                <th colspan="2">Pendapatan dan Pengeluaran</th>
+                <th>Harian</th>
+                <th>Mingguan</th>
+                <th>Bulanan</th>
+                <th>Konversi Akhir (Bulanan)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" style="font-weight: bold; background: #e5e7eb;">INFORMASI USAHA — Pendapatan</td></tr>
+              ${renderCfGroup(r.cfUsahaPendapatan, 'cfUsahaPendapatan', 'up')}
+              <tr style="font-weight: bold; background: #f3f4f6;">
+                <td colspan="5" style="text-align: right;">Total Pendapatan Usaha</td>
+                <td id="cf-tot-pend-usaha" style="text-align: right;">Rp ${fmtRp(cf.totPendUsaha)}</td>
+              </tr>
+
+              <tr><td colspan="6" style="font-weight: bold; background: #e5e7eb;">INFORMASI USAHA — Pengeluaran</td></tr>
+              ${renderCfGroup(r.cfUsahaPengeluaran, 'cfUsahaPengeluaran', 'uk')}
+              <tr style="font-weight: bold; background: #f3f4f6;">
+                <td colspan="5" style="text-align: right;">Total Pengeluaran Usaha</td>
+                <td id="cf-tot-peng-usaha" style="text-align: right;">Rp ${fmtRp(cf.totPengUsaha)}</td>
+              </tr>
+              <tr style="font-weight: bold; background: #d1fae5;">
+                <td colspan="5" style="text-align: right;">Pendapatan Bersih Usaha</td>
+                <td id="cf-bersih-usaha" style="text-align: right;">Rp ${fmtRp(cf.bersihUsaha)}</td>
+              </tr>
+
+              <tr><td colspan="6" style="font-weight: bold; background: #e5e7eb;">RUMAH TANGGA — Pendapatan</td></tr>
+              ${renderCfGroup(r.cfRtPendapatan, 'cfRtPendapatan', 'rp')}
+              <tr style="font-weight: bold; background: #f3f4f6;">
+                <td colspan="5" style="text-align: right;">Total Pendapatan Rumah Tangga</td>
+                <td id="cf-tot-pend-rt" style="text-align: right;">Rp ${fmtRp(cf.totPendRt)}</td>
+              </tr>
+
+              <tr><td colspan="6" style="font-weight: bold; background: #e5e7eb;">RUMAH TANGGA — Pengeluaran</td></tr>
+              ${renderCfGroup(r.cfRtPengeluaran, 'cfRtPengeluaran', 'rk')}
+              <tr style="font-weight: bold; background: #f3f4f6;">
+                <td colspan="5" style="text-align: right;">Total Pengeluaran Rumah Tangga</td>
+                <td id="cf-tot-peng-rt" style="text-align: right;">Rp ${fmtRp(cf.totPengRt)}</td>
+              </tr>
+
+              <tr style="font-weight: bold; background: #bbf7d0;">
+                <td colspan="5" style="text-align: right;">1. Pendapatan Bersih Perbulan</td>
+                <td id="cf-bersih-perbulan" style="text-align: right;">Rp ${fmtRp(cf.bersihPerbulan)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Nomor 2 s/d 10 Persis PDF Cashflow -->
+          <table class="form-table" style="font-size: 7.9pt; margin-top: 4px;">
+            <tr>
+              <td style="width: 22px; text-align: center;">2.</td>
+              <td>Plafon</td>
+              <td style="width: 145px; text-align: right; font-weight: bold;">Rp ${numInputHtml('jumlahPengajuan', r.jumlahPengajuan, { style: 'width: 105px; text-align: right; border-bottom: none; font-weight: bold;', afterFn: 'updateCashflowSummaryDom' })}</td>
+              <td style="width: 22px; text-align: center;">7.</td>
+              <td>Asumsi kemampuan debitur?</td>
+              <td id="cf-kemampuan-debitur" style="width: 165px; font-weight: bold;">${cf.kemampuan}</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">3.</td>
+              <td>Jangka Waktu</td>
+              <td style="text-align: right; font-weight: bold;">${numInputHtml('jangkaWaktu', r.jangkaWaktu, { style: 'width: 45px; text-align: right; border-bottom: none; font-weight: bold;', placeholder: '12', afterFn: 'updateCashflowSummaryDom' })} Bulan</td>
+              <td style="text-align: center;">8.</td>
+              <td>Asumsi Plafond yang bisa disetujui?</td>
+              <td style="text-align: right;">Rp ${numInputHtml('cfPlafondDisetujui', r.cfPlafondDisetujui, { style: 'width: 105px; text-align: right; border-bottom: none;' })}</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">4.</td>
+              <td>Margin perbulan (%)</td>
+              <td style="text-align: right; font-weight: bold;">${numInputHtml('cfMarginPersen', r.cfMarginPersen, { style: 'width: 55px; text-align: right; border-bottom: none; font-weight: bold;', allowDecimal: true, placeholder: '1.5', afterFn: 'updateCashflowSummaryDom' })} %</td>
+              <td style="text-align: center;">9.</td>
+              <td>Asumsi Angsuran yang ideal?</td>
+              <td style="text-align: right;">Rp ${numInputHtml('cfAngsuranIdeal', r.cfAngsuranIdeal, { style: 'width: 105px; text-align: right; border-bottom: none;' })}</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">5.</td>
+              <td>Margin perbulan (Rp)</td>
+              <td id="cf-margin-rp" style="text-align: right; font-weight: bold;">Rp ${fmtRp(cf.marginRp)}</td>
+              <td style="text-align: center;">10.</td>
+              <td>Berapa bulan jangka waktu yang disetujui?</td>
+              <td style="text-align: right;">${numInputHtml('cfJangkaWaktuDisetujui', r.cfJangkaWaktuDisetujui, { style: 'width: 45px; text-align: right; border-bottom: none;', placeholder: '12' })} Bulan</td>
+            </tr>
+            <tr>
+              <td style="text-align: center;">6.</td>
+              <td>Jumlah Angsuran (Rasio: <strong id="cf-persen-angsuran">${cf.persenAngsuran}%</strong> dr Pendapatan Bersih)</td>
+              <td id="cf-jumlah-angsuran" style="text-align: right; font-weight: bold;">Rp ${fmtRp(cf.angsuran)}</td>
+              <td colspan="3" style="font-size: 7.3pt; color: #374151;">Ket: (a. Tidak Mampu b. Kurang Mampu c. Mampu d. Sangat Mampu)</td>
+            </tr>
+          </table>
+
+          <table class="layout-table" style="text-align: center; font-size: 8.3pt; margin-top: 8px;">
+            <tr>
+              <td style="width: 50%;">
+                Analis<br/><br/><br/>
+                ( <input class="paper-input" data-sync-path="cfAnalisAoa" style="width: 155px; text-align: center;" value="${esc(r.cfAnalisAoa)}" oninput="setVal('cfAnalisAoa', this.value, false, this)" /> )<br/>
+                <strong>AOA</strong>
+              </td>
+              <td style="width: 50%;">
+                <input class="paper-input" data-sync-path="cabang" style="width: 95px; text-align: right;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" /> ,
+                <input type="date" class="paper-input" style="width: 105px;" value="${esc(r.cfTanggal)}" onchange="setVal('cfTanggal', this.value)" /><br/>
+                Pemeriksa<br/><br/><br/>
+                ( <input class="paper-input" style="width: 155px; text-align: center;" value="${esc(r.cfPemeriksaKbl)}" oninput="setVal('cfPemeriksaKbl', this.value)" /> )<br/>
+                <strong>KBL</strong>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 6: PMB/FRM/012/REV01 (AGUNAN TANAH) --------------------
+    function renderSheet6(r) {
+      const dp = parseTanggalParts(r.tTanggal);
+      const luas = Number(r.tLuasM2) || 0;
+      const totNjop = (Number(r.tNjopPerM2) || 0) * luas;
+      const totPasar = (Number(r.tPasarPerM2) || 0) * luas;
+      const taksasi = Number(r.tTaksasiTotal) || 0;
+      const maksCair = Math.round(taksasi * ((Number(r.tMaksPencairanPersen) || 0) / 100));
+
+      return `
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 8.5pt;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+            <div style="border: 1px solid #000; padding: 2px 8px; font-weight: bold;">PMB/FRM/012/REV01</div>
+          </div>
+
+          <div style="text-align: center; font-weight: bold; font-size: 11.5pt; text-decoration: underline; margin: 8px 0 12px 0;">
+            SURAT KETERANGAN<br/>PEMERIKSAAN AGUNAN TANAH DAN BANGUNAN
+          </div>
+
+          <div style="margin-bottom: 6px;">
+            Pada hari ini <span class="paper-input" style="display: inline-block; min-width: 75px; text-align: center;">${dp.hari}</span>
+            tanggal <span class="paper-input" style="display: inline-block; min-width: 35px; text-align: center;">${dp.tgl}</span>
+            bulan <span class="paper-input" style="display: inline-block; min-width: 85px; text-align: center;">${dp.bln}</span>
+            tahun <span class="paper-input" style="display: inline-block; min-width: 50px; text-align: center;">${dp.thn}</span>
+            <input type="date" class="no-print paper-input" style="width: 115px; font-size: 8pt; margin-left: 6px;" value="${esc(r.tTanggal)}" onchange="setVal('tTanggal', this.value, true)" />
+          </div>
+
+          <div style="margin-bottom: 4px;">Saya yang bertanda tangan di bawah ini:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nama lengkap</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" data-sync-path="tPemeriksaNama" style="width: 340px;" value="${esc(r.tPemeriksaNama)}" oninput="setVal('tPemeriksaNama', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.tPemeriksaJabatan)}" oninput="setVal('tPemeriksaJabatan', this.value)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px;">Menyatakan dengan sebenarnya bahwa agunan tanah dan bangunan milik/atas nama pemohon <strong data-sync-path="namaLengkap">${esc(r.namaLengkap || '....................')}</strong> sebagai berikut:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nama lengkap</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.tPemeriksaNama)}" oninput="setVal('tPemeriksaNama', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.tPemeriksaJabatan)}" oninput="setVal('tPemeriksaJabatan', this.value)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px;">Menyatakan dengan sebenarnya bahwa agunan tanah dan bangunan milik/atas nama pemohon <strong>${esc(r.namaLengkap || '....................')}</strong> sebagai berikut:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Spesifikasi</td>
+              <td style="width: 10px;">:</td>
+              <td>
+                <span class="strike-opt ${r.tSpesifikasi === 'Tanah' ? 'active-opt' : 'crossed'}" onclick="setVal('tSpesifikasi', 'Tanah', true)">Tanah</span> /
+                <span class="strike-opt ${r.tSpesifikasi === 'Tanah dan Bangunan' ? 'active-opt' : 'crossed'}" onclick="setVal('tSpesifikasi', 'Tanah dan Bangunan', true)">Tanah dan Bangunan</span>*
+              </td>
+            </tr>
+            <tr>
+              <td>Surat Tanah</td>
+              <td>:</td>
+              <td>
+                ${['SHM', 'SHGB', 'SHGU', 'SKT', 'Pettok D', 'Letter C'].map(st =>
+                  `<span class="strike-opt ${r.tSuratTanah === st ? 'active-opt' : 'crossed'}" onclick="setVal('tSuratTanah', '${st}', true)">${st}</span>`
+                ).join(' / ')}
+              </td>
+            </tr>
+            <tr>
+              <td>Nomor Surat</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.tNomorSurat)}" oninput="setVal('tNomorSurat', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Batas Batas</td>
+              <td>:</td>
+              <td>
+                Barat : <input class="paper-input" style="width: 165px;" value="${esc(r.tBatasBarat)}" oninput="setVal('tBatasBarat', this.value)" />
+                &nbsp;&nbsp; Utara : <input class="paper-input" style="width: 165px;" value="${esc(r.tBatasUtara)}" oninput="setVal('tBatasUtara', this.value)" />
+                <br/>
+                Timur : <input class="paper-input" style="width: 165px;" value="${esc(r.tBatasTimur)}" oninput="setVal('tBatasTimur', this.value)" />
+                &nbsp;&nbsp; Selatan : <input class="paper-input" style="width: 160px;" value="${esc(r.tBatasSelatan)}" oninput="setVal('tBatasSelatan', this.value)" />
+              </td>
+            </tr>
+            <tr>
+              <td>Luas</td>
+              <td>:</td>
+              <td>${numInputHtml('tLuasM2', r.tLuasM2, { style: 'width: 75px; text-align: center;', afterFn: 'updateSheet6SummaryDom' })} m2</td>
+            </tr>
+            <tr>
+              <td>Kondisi Agunan</td>
+              <td>:</td>
+              <td>
+                ${['Tanah sawah', 'tanah kering', 'tanah dan bangunan'].map(k =>
+                  `<span class="strike-opt ${r.tKondisi === k ? 'active-opt' : 'crossed'}" onclick="setVal('tKondisi', '${k}', true)">${k}</span>`
+                ).join(' / ')}*
+              </td>
+            </tr>
+            <tr>
+              <td>Lokasi Agunan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 440px;" value="${esc(r.tLokasi)}" oninput="setVal('tLokasi', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Harga NJOP</td>
+              <td>:</td>
+              <td>
+                Rp ${numInputHtml('tNjopPerM2', r.tNjopPerM2, { style: 'width: 110px; text-align: right;', afterFn: 'updateSheet6SummaryDom' })} /m²
+                x Luas <strong id="s6-luas-njop">${luas}</strong> m² = <strong id="s6-tot-njop">Rp ${fmtRp(totNjop)}</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>Harga Pasar</td>
+              <td>:</td>
+              <td>
+                Rp ${numInputHtml('tPasarPerM2', r.tPasarPerM2, { style: 'width: 110px; text-align: right;', afterFn: 'updateSheet6SummaryDom' })} /m²
+                x Luas <strong id="s6-luas-pasar">${luas}</strong> m² = <strong id="s6-tot-pasar">Rp ${fmtRp(totPasar)}</strong>
+              </td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px; font-weight: bold;">Agunan di atas adalah benar-benar telah di appraisal dengan nilai sebagai berikut:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nilai Taksasi</td>
+              <td style="width: 10px;">:</td>
+              <td>Rp ${numInputHtml('tTaksasiTotal', r.tTaksasiTotal, { style: 'width: 155px; font-weight: bold; text-align: right;', afterFn: 'updateSheet6SummaryDom' })}</td>
+            </tr>
+            <tr>
+              <td>Maks Pencarian</td>
+              <td>:</td>
+              <td>
+                ${numInputHtml('tMaksPencairanPersen', r.tMaksPencairanPersen, { style: 'width: 45px; text-align: center;', afterFn: 'updateSheet6SummaryDom' })} %
+                = <strong id="s6-maks-cair">Rp ${fmtRp(maksCair)}</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>Pengajuan</td>
+              <td>:</td>
+              <td><strong class="sync-rp-pengajuan">Rp ${fmtRp(r.jumlahPengajuan)}</strong></td>
+            </tr>
+            <tr>
+              <td>Terbilang</td>
+              <td>:</td>
+              <td><span id="s6-terbilang-taksasi" class="paper-input" style="display: inline-block; min-width: 410px; font-style: italic;">${terbilang(taksasi)}</span></td>
+            </tr>
+            <tr>
+              <td>Dasar nilai pasar</td>
+              <td>:</td>
+              <td>${numInputHtml('tDasarNilaiPasarPersen', r.tDasarNilaiPasarPersen, { style: 'width: 45px; text-align: center;' })} % dari harga pasar setempat</td>
+            </tr>
+          </table>
+
+          <p style="text-align: justify; line-height: 1.4;">
+            Demikian surat keterangan ini dibuat dengan sebenar-benarnya untuk digunakan sebagaimana mestinya, dan kami bersedia mengganti apabila keterangan yang kami buat tidak sesuai dengan kenyataan.
+          </p>
+
+          <div style="text-align: right; font-size: 8.8pt; margin-top: 10px;">
+            Dibuat di: <input class="paper-input" style="width: 120px;" value="${esc(r.tDibuatDi || r.cabang)}" oninput="setVal('tDibuatDi', this.value)" /> ,
+            <input type="date" class="paper-input" style="width: 115px;" value="${esc(r.tTanggalBuat)}" onchange="setVal('tTanggalBuat', this.value)" />
+          </div>
+
+          <table class="layout-table" style="text-align: center; font-size: 9pt; margin-top: 6px;">
+            <tr>
+              <td style="width: 50%;">
+                Pembuat,<br/><br/><br/><br/>
+                ( <input class="paper-input" data-sync-path="tPembuatAoap" style="width: 165px; text-align: center;" value="${esc(r.tPembuatAoap)}" oninput="setVal('tPembuatAoap', this.value, false, this)" /> )<br/>
+                <strong>AOAP</strong>
+              </td>
+              <td style="width: 50%;">
+                Persetujuan,<br/><br/><br/><br/>
+                ( <input class="paper-input" style="width: 165px; text-align: center;" value="${esc(r.tPersetujuanKcp)}" oninput="setVal('tPersetujuanKcp', this.value)" /> )<br/>
+                <strong>KCP/KCB</strong>
+              </td>
+            </tr>
+          </table>
+          <div style="font-size: 7.5pt; margin-top: 4px;">* Coret yang tidak perlu</div>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 7: PMB/FRM/010/REV01 (AGUNAN KENDARAAN) --------------------
+    function renderSheet7(r) {
+      const dp = parseTanggalParts(r.kTanggal);
+      const taksasi = Number(r.kNilaiTaksasi) || 0;
+      const maksCair = Math.round(taksasi * ((Number(r.kMaksPencairanPersen) || 0) / 100));
+
+      return `
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 8.5pt;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+            <div style="border: 1px solid #000; padding: 2px 8px; font-weight: bold;">PMB/FRM/010/REV01</div>
+          </div>
+
+          <div style="text-align: center; font-weight: bold; font-size: 11.5pt; text-decoration: underline; margin: 8px 0 12px 0;">
+            SURAT KETERANGAN<br/>PEMERIKSAAN DAN APPRAISAL KENDARAAN
+          </div>
+
+          <div style="margin-bottom: 6px;">
+            Pada hari ini <span class="paper-input" style="display: inline-block; min-width: 75px; text-align: center;">${dp.hari}</span>
+            tanggal <span class="paper-input" style="display: inline-block; min-width: 35px; text-align: center;">${dp.tgl}</span>
+            bulan <span class="paper-input" style="display: inline-block; min-width: 85px; text-align: center;">${dp.bln}</span>
+            tahun <span class="paper-input" style="display: inline-block; min-width: 50px; text-align: center;">${dp.thn}</span>
+            <input type="date" class="no-print paper-input" style="width: 115px; font-size: 8pt; margin-left: 6px;" value="${esc(r.kTanggal)}" onchange="setVal('kTanggal', this.value, true)" />
+          </div>
+
+          <div style="margin-bottom: 4px;">Saya yang bertanda tangan di bawah ini:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nama lengkap</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" data-sync-path="kPemeriksaNama" style="width: 340px;" value="${esc(r.kPemeriksaNama)}" oninput="setVal('kPemeriksaNama', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kPemeriksaJabatan)}" oninput="setVal('kPemeriksaJabatan', this.value)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px;">Menyatakan dengan sebenarnya bahwa agunan kendaraan milik/atas nama pemohon <strong data-sync-path="namaLengkap">${esc(r.namaLengkap || '....................')}</strong> sebagai berikut:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nilai Taksasi</td>
+              <td style="width: 10px;">:</td>
+              <td>Rp <input type="number" class="paper-input" style="width: 155px; font-weight: bold;" value="${r.tTaksasiTotal || ''}" oninput="setVal('tTaksasiTotal', Number(this.value), true)" /></td>
+            </tr>
+            <tr>
+              <td>Maks Pencarian</td>
+              <td>:</td>
+              <td>
+                <input type="number" class="paper-input" style="width: 45px; text-align: center;" value="${r.tMaksPencairanPersen}" oninput="setVal('tMaksPencairanPersen', Number(this.value), true)" /> %
+                = <strong>Rp ${fmtRp(maksCair)}</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>Pengajuan</td>
+              <td>:</td>
+              <td><strong>Rp ${fmtRp(r.jumlahPengajuan)}</strong></td>
+            </tr>
+            <tr>
+              <td>Terbilang</td>
+              <td>:</td>
+              <td><span class="paper-input" style="display: inline-block; min-width: 410px; font-style: italic;">${terbilang(taksasi)}</span></td>
+            </tr>
+            <tr>
+              <td>Dasar nilai pasar</td>
+              <td>:</td>
+              <td><input type="number" class="paper-input" style="width: 45px; text-align: center;" value="${r.tDasarNilaiPasarPersen}" oninput="setVal('tDasarNilaiPasarPersen', Number(this.value))" /> % dari harga pasar setempat</td>
+            </tr>
+          </table>
+
+          <p style="text-align: justify; line-height: 1.4;">
+            Demikian surat keterangan ini dibuat dengan sebenar-benarnya untuk digunakan sebagaimana mestinya, dan kami bersedia mengganti apabila keterangan yang kami buat tidak sesuai dengan kenyataan.
+          </p>
+
+          <div style="text-align: right; font-size: 8.8pt; margin-top: 10px;">
+            Dibuat di: <input class="paper-input" style="width: 120px;" value="${esc(r.tDibuatDi || r.cabang)}" oninput="setVal('tDibuatDi', this.value)" /> ,
+            <input type="date" class="paper-input" style="width: 115px;" value="${esc(r.tTanggalBuat)}" onchange="setVal('tTanggalBuat', this.value)" />
+          </div>
+
+          <table class="layout-table" style="text-align: center; font-size: 9pt; margin-top: 6px;">
+            <tr>
+              <td style="width: 50%;">
+                Pembuat,<br/><br/><br/><br/>
+                ( <input class="paper-input" style="width: 165px; text-align: center;" value="${esc(r.tPembuatAoap)}" oninput="setVal('tPembuatAoap', this.value)" /> )<br/>
+                <strong>AOAP</strong>
+              </td>
+              <td style="width: 50%;">
+                Persetujuan,<br/><br/><br/><br/>
+                ( <input class="paper-input" style="width: 165px; text-align: center;" value="${esc(r.tPersetujuanKcp)}" oninput="setVal('tPersetujuanKcp', this.value)" /> )<br/>
+                <strong>KCP/KCB</strong>
+              </td>
+            </tr>
+          </table>
+          <div style="font-size: 7.5pt; margin-top: 4px;">* Coret yang tidak perlu</div>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 7: PMB/FRM/010/REV01 (AGUNAN KENDARAAN) --------------------
+    function renderSheet7(r) {
+      const dp = parseTanggalParts(r.kTanggal);
+      const taksasi = Number(r.kNilaiTaksasi) || 0;
+      const maksCair = Math.round(taksasi * ((Number(r.kMaksPencairanPersen) || 0) / 100));
+
+      return `
+        <div class="a4-sheet">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 8.5pt;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value)" />
+            </div>
+            <div style="border: 1px solid #000; padding: 2px 8px; font-weight: bold;">PMB/FRM/010/REV01</div>
+          </div>
+
+          <div style="text-align: center; font-weight: bold; font-size: 11.5pt; text-decoration: underline; margin: 8px 0 12px 0;">
+            SURAT KETERANGAN<br/>PEMERIKSAAN DAN APPRAISAL KENDARAAN
+          </div>
+
+          <div style="margin-bottom: 6px;">
+            Pada hari ini <span class="paper-input" style="display: inline-block; min-width: 75px; text-align: center;">${dp.hari}</span>
+            tanggal <span class="paper-input" style="display: inline-block; min-width: 35px; text-align: center;">${dp.tgl}</span>
+            bulan <span class="paper-input" style="display: inline-block; min-width: 85px; text-align: center;">${dp.bln}</span>
+            tahun <span class="paper-input" style="display: inline-block; min-width: 50px; text-align: center;">${dp.thn}</span>
+            <input type="date" class="no-print paper-input" style="width: 115px; font-size: 8pt; margin-left: 6px;" value="${esc(r.kTanggal)}" onchange="setVal('kTanggal', this.value, true)" />
+          </div>
+
+          <div style="margin-bottom: 4px;">Saya yang bertanda tangan di bawah ini:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nama lengkap</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kPemeriksaNama)}" oninput="setVal('kPemeriksaNama', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kPemeriksaJabatan)}" oninput="setVal('kPemeriksaJabatan', this.value)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px;">Menyatakan dengan sebenarnya bahwa agunan kendaraan milik/atas nama pemohon <strong>${esc(r.namaLengkap || '....................')}</strong> sebagai berikut:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Jenis</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kJenis)}" oninput="setVal('kJenis', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Merek</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kMerek)}" oninput="setVal('kMerek', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Warna</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kWarna)}" oninput="setVal('kWarna', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Tahun</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kTahun)}" oninput="setVal('kTahun', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Atas Nama</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kAtasNama)}" oninput="setVal('kAtasNama', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Alamat</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 440px;" value="${esc(r.kAlamat)}" oninput="setVal('kAlamat', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Kondisi kendaraan</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 440px;" value="${esc(r.kKondisi)}" oninput="setVal('kKondisi', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>Nopol</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 240px;" value="${esc(r.kNopol)}" oninput="setVal('kNopol', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>No BPKB</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 240px;" value="${esc(r.kNoBpkb)}" oninput="setVal('kNoBpkb', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>No. Rangka</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kNoRangka)}" oninput="setVal('kNoRangka', this.value)" /></td>
+            </tr>
+            <tr>
+              <td>No. Mesin</td>
+              <td>:</td>
+              <td><input class="paper-input" style="width: 340px;" value="${esc(r.kNoMesin)}" oninput="setVal('kNoMesin', this.value)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px; font-weight: bold;">Agunan di atas adalah benar-benar telah di appraisal dengan nilai sebagai berikut:</div>
+          <table class="layout-table" style="margin-left: 14px; margin-bottom: 10px; font-size: 9pt;">
+            <tr>
+              <td style="width: 135px;">Nilai Pasar</td>
+              <td style="width: 10px;">:</td>
+              <td>Rp ${numInputHtml('kNilaiPasar', r.kNilaiPasar, { style: 'width: 165px; text-align: right;' })}</td>
+            </tr>
+            <tr>
+              <td>Nilai Taksasi</td>
+              <td>:</td>
+              <td>Rp ${numInputHtml('kNilaiTaksasi', r.kNilaiTaksasi, { style: 'width: 165px; font-weight: bold; text-align: right;', afterFn: 'updateSheet7SummaryDom' })}</td>
+            </tr>
+            <tr>
+              <td>Maks Pencairan</td>
+              <td>:</td>
+              <td>
+                ${numInputHtml('kMaksPencairanPersen', r.kMaksPencairanPersen, { style: 'width: 45px; text-align: center;', afterFn: 'updateSheet7SummaryDom' })} %
+                = <strong id="s7-maks-cair">Rp ${fmtRp(maksCair)}</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>Pengajuan</td>
+              <td>:</td>
+              <td><strong class="sync-rp-pengajuan">Rp ${fmtRp(r.jumlahPengajuan)}</strong></td>
+            </tr>
+            <tr>
+              <td>Terbilang</td>
+              <td>:</td>
+              <td><span id="s7-terbilang-taksasi" class="paper-input" style="display: inline-block; min-width: 410px; font-style: italic;">${terbilang(taksasi)}</span></td>
+            </tr>
+            <tr>
+              <td>Dasar nilai pasar</td>
+              <td>:</td>
+              <td>${numInputHtml('kDasarNilaiPasarPersen', r.kDasarNilaiPasarPersen, { style: 'width: 45px; text-align: center;' })} %</td>
+            </tr>
+          </table>
+
+          <p style="text-align: justify; line-height: 1.4;">
+            Demikian surat keterangan ini dibuat dengan sebenar-benarnya untuk digunakan sebagaimana mestinya, dan kami bersedia mengganti apabila keterangan yang kami buat tidak sesuai dengan kenyataan.
+          </p>
+
+          <div style="text-align: right; font-size: 8.8pt; margin-top: 10px;">
+            Dibuat di : <input class="paper-input" style="width: 120px;" value="${esc(r.kDibuatDi || r.cabang)}" oninput="setVal('kDibuatDi', this.value)" /> ,
+            <input type="date" class="paper-input" style="width: 115px;" value="${esc(r.kTanggalBuat)}" onchange="setVal('kTanggalBuat', this.value)" />
+          </div>
+
+          <table class="layout-table" style="text-align: center; font-size: 9pt; margin-top: 6px;">
+            <tr>
+              <td style="width: 50%;">
+                Pembuat,<br/><br/><br/><br/>
+                ( <input class="paper-input" data-sync-path="kPembuatAoap" style="width: 165px; text-align: center;" value="${esc(r.kPembuatAoap)}" oninput="setVal('kPembuatAoap', this.value, false, this)" /> )<br/>
+                <strong>AOAP</strong>
+              </td>
+              <td style="width: 50%;">
+                Persetujuan,<br/><br/><br/><br/>
+                ( <input class="paper-input" style="width: 165px; text-align: center;" value="${esc(r.kPersetujuanKcp)}" oninput="setVal('kPersetujuanKcp', this.value)" /> )<br/>
+                <strong>KCP/KCB</strong>
+              </td>
+            </tr>
+          </table>
+        </div>
+      `;
+    }
+
+    // -------------------- LEMBAR 8: SURAT PERNYATAAN PENERIMA PEMBIAYAAN --------------------
+    function renderSheet8(r) {
+      const dp = parseTanggalParts(r.spTanggal);
+      const pekerjaanText = (r.sumberPendapatan || []).join(' / ') || r.jabatanKerja || '';
+      const alamatFull = [r.alamatKtp, r.rtRwKtp ? 'RT/RW ' + r.rtRwKtp : '', r.kelDesaKtp, r.kecamatanKtp, r.kabKotaKtp].filter(Boolean).join(', ');
+
+      return `
+        <div class="a4-sheet font-serif-doc" style="font-size: 9.8pt; line-height: 1.38;">
+          ${renderKopSurat()}
+          <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 4px; font-family: Arial, Helvetica, sans-serif;">
+            <div class="cabang-box">
+              <span>CABANG / CAPEM :</span>
+              <input class="cabang-in" data-sync-path="cabang" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+            </div>
+          </div>
+          <div style="text-align: center; font-weight: bold; font-size: 12pt; text-decoration: underline; margin: 6px 0 12px 0; font-family: Arial, Helvetica, sans-serif;">
+            SURAT PERNYATAAN PENERIMA PEMBIAYAAN
+          </div>
+
+          <div style="margin-bottom: 4px;">Saya yang bertanda tangan di bawah ini:</div>
+          <table class="layout-table" style="margin-left: 16px; margin-bottom: 8px; font-size: 9.5pt;">
+            <tr>
+              <td style="width: 115px;">Nama</td>
+              <td style="width: 10px;">:</td>
+              <td><input class="paper-input" data-sync-path="namaLengkap" style="width: 390px;" value="${esc(r.namaLengkap)}" oninput="setVal('namaLengkap', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>NIK KTP</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="nikKtp" style="width: 390px;" value="${esc(r.nikKtp)}" oninput="setVal('nikKtp', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Alamat</td>
+              <td>:</td>
+              <td><input class="paper-input sync-alamat-full" style="width: 440px;" value="${esc(alamatFull)}" oninput="setVal('alamatKtp', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>Pekerjaan</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="jabatanKerja" style="width: 390px;" value="${esc(pekerjaanText)}" oninput="setVal('jabatanKerja', this.value, false, this)" /></td>
+            </tr>
+            <tr>
+              <td>No. Telepon</td>
+              <td>:</td>
+              <td><input class="paper-input" data-sync-path="noHp" style="width: 390px;" value="${esc(r.noHp)}" oninput="setVal('noHp', this.value, false, this)" /></td>
+            </tr>
+          </table>
+
+          <div style="margin-bottom: 4px;">Dengan ini menyatakan dengan sesungguhnya bahwa:</div>
+          <ol style="margin: 0; padding-left: 20px; text-align: justify;">
+            <li style="margin-bottom: 4px;">
+              Saya adalah pihak yang sah dan berwenang menerima pembiayaan dari <strong>KSPPS BMT UGT Nusantara</strong> Kantor Cabang/Capem
+              <input class="paper-input" data-sync-path="cabang" style="width: 140px;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" />
+              berdasarkan akad pembiayaan yang telah ditandatangani.
+            </li>
+            <li style="margin-bottom: 4px;">
+              Seluruh data, dokumen, dan informasi yang saya berikan adalah benar, sah, dan dapat dipertanggungjawabkan secara hukum.
+            </li>
+            <li style="margin-bottom: 4px;">
+              Dana pembiayaan yang saya terima sepenuhnya digunakan sendiri oleh saya sesuai dengan tujuan pembiayaan sebagaimana tercantum dalam akad, dan tidak dialihkan, dipindahtangankan, dijaminkan, atau digunakan oleh pihak ketiga tanpa persetujuan tertulis dari KSPPS BMT UGT Nusantara.
+            </li>
+            <li style="margin-bottom: 4px;">
+              Saya bertanggung jawab penuh secara pribadi untuk melakukan pembayaran angsuran tepat waktu sesuai jadwal yang ditetapkan dalam akad pembiayaan sampai dengan pelunasan.
+            </li>
+            <li style="margin-bottom: 4px;">
+              Apabila terjadi keterlambatan atau kelalaian pembayaran (wanprestasi), saya dengan ini menyatakan bersedia :
+              <ol type="a" style="padding-left: 18px; margin-top: 2px;">
+                <li>Menanggung seluruh kewajiban yang timbul, termasuk biaya penagihan, biaya hukum, dan kerugian lain yang dialami KSPPS BMT UGT Nusantara.</li>
+                <li>KSPPS BMT UGT Nusantara berhak menuntut pelunasan seluruh sisa kewajiban sekaligus dan seketika (<em>acceleration clause</em>).</li>
+                <li>Memberikan kuasa penuh kepada KSPPS BMT UGT Nusantara untuk melakukan penagihan, penyitaan, pelelangan agunan, dan tindakan hukum lainnya sesuai peraturan perundang-undangan yang berlaku, tanpa perlu persetujuan lebih lanjut dari saya.</li>
+              </ol>
+            </li>
+            <li style="margin-bottom: 4px;">
+              Saya memahami bahwa setiap pelanggaran terhadap pernyataan ini merupakan perbuatan melawan hukum/wanprestasi, sehingga saya dapat dituntut secara perdata maupun pidana sesuai hukum yang berlaku di Republik Indonesia.
+            </li>
+            <li style="margin-bottom: 4px;">
+              Surat pernyataan ini dibuat dengan kesadaran penuh, tanpa paksaan, tekanan, atau pengaruh dari pihak mana pun, serta mengikat secara hukum.
+            </li>
+            <li style="margin-bottom: 4px;">
+              Surat pernyataan ini merupakan bagian yang tidak terpisahkan dari akad pembiayaan.
+            </li>
+          </ol>
+
+          <p style="margin: 6px 0 10px 0; text-align: justify;">
+            Demikian surat pernyataan ini saya buat dengan sebenar-benarnya untuk dapat digunakan sebagai dasar hukum dan alat bukti apabila diperlukan.
+          </p>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 8px; margin-bottom: 14px;">
+            <div style="text-align: center; width: 245px;">
+              <div>
+                <input class="paper-input" data-sync-path="cabang" style="width: 105px; text-align: right;" value="${esc(r.cabang)}" oninput="setVal('cabang', this.value, false, this)" /> ,
+                ${dp.tgl} ${dp.bln} ${dp.thn}
+                <input type="date" class="no-print paper-input" style="width: 110px; font-size: 7.5pt;" value="${esc(r.spTanggal)}" onchange="setVal('spTanggal', this.value, true)" />
+              </div>
+              <div style="margin-top: 2px;">Yang Membuat Pernyataan,</div>
+              <div style="border: 1px dashed #000000; width: 92px; height: 42px; margin: 6px auto; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; font-family: Arial, sans-serif;">
+                Materai Rp10.000,-
+              </div>
+              <div style="margin-top: 6px; font-weight: bold;">
+                ( <input class="paper-input" data-sync-path="namaLengkap" style="width: 185px; text-align: center; font-weight: bold;" value="${esc(r.namaLengkap)}" oninput="setVal('namaLengkap', this.value, false, this)" /> )
+              </div>
+              <div style="font-size: 7.5pt;">(tanda tangan &amp; nama jelas)</div>
+            </div>
+          </div>
+
+          <!-- Footer Kantor Pusat Persis PDF Surat Pernyataan -->
+          <div style="border-top: 1.5px solid #1b6b50; padding-top: 4px; text-align: center; font-family: Arial, Helvetica, sans-serif; font-size: 7.5pt; color: #1f2937;">
+            Kantor Pusat : Jl. Sidogiri Barat RT/RW. 03/02 Sidogiri Kraton Pasuruan 671651 Jawa Timur<br/>
+            Telp. 0343-423251 Fax. 0343-423571 http://www.bmtugtnusantara.co.id bmt.ugt.pusat@gmail.com
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 7. TOP BAR NAVIGATION, MENU PEMBIAYAAN, RECORD SWITCHER & PRINT
+    // =========================================================================
+    function togglePembiayaanDropdown() {
+      const dd = document.getElementById('pembiayaan-dropdown');
+      if (dd) dd.classList.toggle('hidden');
+    }
+
+    function selectPembiayaanItem(val) {
+      const dd = document.getElementById('pembiayaan-dropdown');
+      if (dd) dd.classList.add('hidden');
+      switchTab(val);
+    }
+
+    document.addEventListener('click', function(e) {
+      const wrapper = document.getElementById('pembiayaan-menu-wrapper');
+      const dd = document.getElementById('pembiayaan-dropdown');
+      if (wrapper && dd && !wrapper.contains(e.target)) {
+        dd.classList.add('hidden');
+      }
+    });
+
+    function renderTopBar() {
+      const sel = document.getElementById('select-berkas');
+      sel.innerHTML = appList.map(item =>
+        `<option value="${item.id}" ${item.id === activeId ? 'selected' : ''}>${esc(item.namaLengkap || 'Berkas Baru (Tanpa Nama)')}</option>`
+      ).join('');
+
+      const btnReset = document.getElementById('btn-reset-kop');
+      if (customKopBase64) btnReset.classList.remove('hidden');
+      else btnReset.classList.add('hidden');
+
+      const btnClearCf = document.getElementById('btn-clear-cashflow');
+      if (btnClearCf) {
+        if (activeTab === 5 || activeTab === 'ALL') btnClearCf.classList.remove('hidden');
+        else btnClearCf.classList.add('hidden');
+      }
+
+      // Update lencana aktif di tombol utama PEMBIAYAAN
+      const badge = document.getElementById('pembiayaan-active-badge');
+      if (badge) {
+        if (activeTab === 'ALL') {
+          badge.textContent = 'Semua (8 Lembar)';
+        } else {
+          const cur = TABS_DEF.find(x => x.id === activeTab);
+          badge.textContent = cur ? cur.short : 'Semua (8 Lembar)';
+        }
+      }
+
+      // Highlight item "Tampilkan Semua (8 Lembar)" di dropdown
+      const ddAll = document.getElementById('dd-item-ALL');
+      if (ddAll) {
+        if (activeTab === 'ALL') ddAll.classList.add('bg-emerald-50', 'text-emerald-900');
+        else ddAll.classList.remove('bg-emerald-50', 'text-emerald-900');
+      }
+
+      // Render daftar sub-menu di dropdown PEMBIAYAAN
+      const ddItems = document.getElementById('pembiayaan-dropdown-items');
+      if (ddItems) {
+        ddItems.innerHTML = TABS_DEF.map(t => {
+          const isAct = t.id === activeTab;
+          return `
+            <button type="button" onclick="selectPembiayaanItem(${t.id})" class="w-full text-left px-3 py-2 text-xs hover:bg-emerald-50 flex items-center justify-between ${isAct ? 'bg-emerald-50 font-extrabold text-emerald-900' : 'text-gray-700 font-medium'}">
+              <span>${t.label}</span>
+              ${isAct ? '<span class="text-emerald-700 font-bold">✓</span>' : ''}
+            </button>
+          `;
+        }).join('');
+      }
+
+      // Render bilah pintasan cepat di sebelah tombol PEMBIAYAAN
+      const nav = document.getElementById('nav-tabs');
+      const allBtn = `
+        <button onclick="switchTab('ALL')" class="px-2.5 py-1 rounded-md text-xs font-bold whitespace-nowrap transition ${activeTab === 'ALL' ? 'bg-white text-[#14533c] shadow-xs' : 'text-emerald-100 hover:bg-emerald-800'}">
+          📑 Semua (8 Form)
+        </button>
+      `;
+      nav.innerHTML = allBtn + TABS_DEF.map(t => {
+        const isAct = t.id === activeTab;
+        return `
+          <button onclick="switchTab(${t.id})" class="px-2.5 py-1 rounded-md text-xs font-bold whitespace-nowrap transition ${isAct ? 'bg-white text-[#14533c] shadow-xs' : 'text-emerald-100 hover:bg-emerald-800'}">
+            ${t.label}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderPaper() {
+      const r = getRec();
+      const container = document.getElementById('paper-container');
+      if (isPrintingAll || activeTab === 'ALL') {
+        container.innerHTML =
+          renderSheet1(r) +
+          renderSheet2(r) +
+          renderSheet3(r) +
+          renderSheet4(r) +
+          renderSheet5(r) +
+          renderSheet6(r) +
+          renderSheet7(r) +
+          renderSheet8(r);
+        return;
+      }
+
+      switch (activeTab) {
+        case 1: container.innerHTML = renderSheet1(r); break;
+        case 2: container.innerHTML = renderSheet2(r); break;
+        case 3: container.innerHTML = renderSheet3(r); break;
+        case 4: container.innerHTML = renderSheet4(r); break;
+        case 5: container.innerHTML = renderSheet5(r); break;
+        case 6: container.innerHTML = renderSheet6(r); break;
+        case 7: container.innerHTML = renderSheet7(r); break;
+        case 8: container.innerHTML = renderSheet8(r); break;
+      }
+    }
+
+    function switchTab(tabId) {
+      activeTab = tabId;
+      isPrintingAll = false;
+      renderTopBar();
+      renderPaper();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchApplication(id) {
+      activeId = id;
+      renderTopBar();
+      renderPaper();
+    }
+
+    function createNewApplication() {
+      const rec = createBlankRecord();
+      appList.unshift(rec);
+      activeId = rec.id;
+      activeTab = 'ALL';
+      saveAllData(true);
+      renderTopBar();
+      renderPaper();
+    }
+
+    function deleteCurrentApplication() {
+      if (appList.length <= 1) {
+        appList = [createBlankRecord()];
+        activeId = appList[0].id;
+      } else {
+        appList = appList.filter(x => x.id !== activeId);
+        activeId = appList[0].id;
+      }
+      saveAllData(true);
+      renderTopBar();
+      renderPaper();
+    }
+
+    function printActiveSheet() {
+      isPrintingAll = false;
+      renderPaper();
+      setTimeout(() => window.print(), 120);
+    }
+
+    function printAllSheets() {
+      isPrintingAll = true;
+      renderPaper();
+      setTimeout(() => {
+        window.print();
+      }, 150);
+    }
+
+    window.addEventListener('afterprint', () => {
+      if (isPrintingAll) {
+        isPrintingAll = false;
+        renderPaper();
+      }
+    });
+
+    // =========================================================================
+    // 8. INIT
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAllData();
+      renderTopBar();
+      renderPaper();
+    });
+  </script>
+</body>
+</html>
